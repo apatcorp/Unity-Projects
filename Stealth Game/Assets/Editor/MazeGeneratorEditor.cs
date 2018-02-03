@@ -18,7 +18,7 @@ public class MazeGeneratorEditor : Editor {
         if (GUILayout.Button("Generate Maze"))
         {
             mazeGenerator.DestroyCurrentMaze();
-            mazeGenerator.GernerateMazePrim(Random.Range(0, 10000));
+            mazeGenerator.GernerateMazeGrid(Random.Range(0, 10000));
         }
 
         if (GUILayout.Button("Destroy Maze"))
