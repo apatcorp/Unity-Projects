@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Cell {
 
@@ -193,12 +194,15 @@ public class Cell {
     List<Cell> neighbours;
     List<Wall> walls;
 
+    public Vector3 worldPosition;
+
     public bool visited;
 
-    public Cell(int x, int y, int cellWidth)
+    public Cell(int x, int y, Vector3 worldPosition, int cellWidth)
     {
         this.x = x;
         this.y = y;
+        this.worldPosition = worldPosition;
         this.cellWidth = cellWidth;
 
         visited = false;

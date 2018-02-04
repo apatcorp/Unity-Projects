@@ -11,8 +11,11 @@ public static class GridGenerator {
         {
             for (int x = 0; x < width; x++)
             {
+                // position of the cell in world space
+                Vector3 cellPosition = new Vector3((-width / 2f + x) * cellWidth, cellWidth / 2f, (-height / 2f + y) * cellWidth);
+
                 // create a cell
-                cellGrid[x, y] = new Cell(x, y, cellWidth);
+                cellGrid[x, y] = new Cell(x, y, cellPosition, cellWidth);
             }
         }
 
@@ -48,7 +51,7 @@ public static class GridGenerator {
             for (int x = 0; x < width; x++)
             {
                 // position of the cell in world space
-                Vector3 cellPosition = new Vector3((-width / 2f + x) * cellWidth , cellWidth / 2f, (-height / 2f + y) * cellWidth);
+                Vector3 cellPosition = cellGrid[x, y].worldPosition;//new Vector3((-width / 2f + x) * cellWidth , cellWidth / 2f, (-height / 2f + y) * cellWidth);
 
                 // create left and bottom wall
                 Wall leftWall = new Wall(new Vector3(cellPosition.x - cellWidth / 2f, cellPosition.y, cellPosition.z), false, cellGrid[x, y]);

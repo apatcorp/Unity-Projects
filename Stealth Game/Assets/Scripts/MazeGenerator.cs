@@ -1,66 +1,34 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeGenerator : MonoBehaviour
+public static class MazeGenerator
 {
-    public Transform wallPrefab;
-    [Range(1, 50)]
-    public int width, height;
-    [Range(1, 5)]
-    public int cellWidth = 1;
-
     public enum Algorithm { PRIM, KRUSKAL, RECURSIVE_BACKTRACKER }
-    public Algorithm algorithm;
-
-    Cell[,] cells;
-	
-	public void GernerateMazeGrid (int seed)
+ 
+    public static Cell[,] GernerateMazeGrid (int width, int height, int cellWidth, Algorithm algorithm, int seed)
     {
         // get cell grid
-        cells = GridGenerator.CreateCellGrid(width, height, cellWidth);
+        Cell [,] cells = GridGenerator.CreateCellGrid(width, height, cellWidth);
 
         // apply maze generation algorithm to the cell grid
         switch (algorithm)
         {
             case Algorithm.PRIM:
-                PrimAlgorithm(seed);
+                PrimAlgorithm(ref cells, width, height, seed);
                 break;
             case Algorithm.KRUSKAL:
-                RandomizedKruskal(seed);
+                RandomizedKruskal(ref cells, seed);
                 break;
             case Algorithm.RECURSIVE_BACKTRACKER:
-                RecursiveBackTracker(seed);
+                RecursiveBackTracker(ref cells, width, height, seed);
                 break;
         }
 
-        // create walls
-        WallCreator.CreateWallsForMaze(cells, transform, wallPrefab);
-
-        // create a plane
-        GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        plane.transform.SetParent(transform);
-        plane.transform.localPosition = -new Vector3(cellWidth / 2f, 0f, cellWidth / 2f);
-        plane.transform.localScale = new Vector3(width / 10f, 1, height / 10f) * cellWidth;
+        return cells;
     }
 
-    public void DestroyCurrentMaze ()
+    static void PrimAlgorithm (ref Cell[,] cells, int width, int height, int seed)
     {
-        List<GameObject> objToDestroy = new List<GameObject>();
-
-        foreach (Transform item in transform)
-        {
-            objToDestroy.Add(item.gameObject);
-        }
-
-        objToDestroy.ForEach(x => DestroyImmediate(x));
-
-        cells = null;
-    }
-
-    void PrimAlgorithm (int seed)
-    {
-        print("Prim");
-
         // pick a random cell from the map
         Cell currentCell = cells[Random.Range(0, width - 1), Random.Range(0, height - 1)];
 
@@ -103,10 +71,8 @@ public class MazeGenerator : MonoBehaviour
         }
     }
 
-    public void RandomizedKruskal(int seed)
+    static void RandomizedKruskal(ref Cell[,] cells, int seed)
     {
-        print("Kruskal");
-
         // create a list of all walls
         List<Wall> wallList = new List<Wall>();
         // create a list with a list for each cell
@@ -178,10 +144,8 @@ public class MazeGenerator : MonoBehaviour
         }
     }
     
-    void RecursiveBackTracker(int seed)
+    static void RecursiveBackTracker(ref Cell[,] cells, int width, int height, int seed)
     {
-        print("Recursive Backtracker");
-
         // initial pseudo random number generator
         Random.InitState(seed);
 
@@ -189,13 +153,13 @@ public class MazeGenerator : MonoBehaviour
         int totalAmountOfCells = width * height;
 
         // set an initial cell
-        Cell initialCell = cells[0, 0];
+        Cell initialCell = cells[Random.Range(0, width), Random.Range(0, height)];
 
         // start backtracking
-        RecursiveBacktracking(initialCell, totalAmountOfCells);
+        RecursiveBacktracking(ref cells, initialCell, totalAmountOfCells);
     }
 
-    void RecursiveBacktracking (Cell initialCell, int totalCellsUnvisited)
+    static void RecursiveBacktracking (ref Cell[,] cells, Cell initialCell, int totalCellsUnvisited)
     {
         // set current cell and set it as visited
         Cell currentCell = initialCell;
@@ -222,7 +186,7 @@ public class MazeGenerator : MonoBehaviour
                 Cell.RemoveWallBetweenTwoCells(ref currentCell, ref newCell);
 
                 // go layer deeper
-                RecursiveBacktracking(newCell, --totalCellsUnvisited);
+                RecursiveBacktracking(ref cells, newCell, --totalCellsUnvisited);
 
             } else
             {
