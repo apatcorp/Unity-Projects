@@ -48,11 +48,11 @@ public static class GridGenerator {
             for (int x = 0; x < width; x++)
             {
                 // position of the cell in world space
-                Vector3 cellPosition = new Vector3(-width / 2f + x * cellWidth , 0f, -height / 2f + y * cellWidth);
+                Vector3 cellPosition = new Vector3((-width / 2f + x) * cellWidth , cellWidth / 2f, (-height / 2f + y) * cellWidth);
 
                 // create left and bottom wall
-                Wall leftWall = new Wall(new Vector3(cellPosition.x - cellWidth / 2f, 0f, cellPosition.z), false, cellGrid[x, y]);
-                Wall bottomWall = new Wall(new Vector3(cellPosition.x, 0f, cellPosition.z - cellWidth / 2f), true, cellGrid[x, y]);
+                Wall leftWall = new Wall(new Vector3(cellPosition.x - cellWidth / 2f, cellPosition.y, cellPosition.z), false, cellGrid[x, y]);
+                Wall bottomWall = new Wall(new Vector3(cellPosition.x, cellPosition.y, cellPosition.z - cellWidth / 2f), true, cellGrid[x, y]);
 
                 // set the corresponding walls in the current cell
                 cellGrid[x, y].LeftWall = leftWall;
@@ -76,13 +76,13 @@ public static class GridGenerator {
 
                 if (x == width - 1)
                 {
-                    Wall rightWall = new Wall(new Vector3(cellPosition.x + cellWidth / 2f, 0f, cellPosition.z), false, cellGrid[x, y]);
+                    Wall rightWall = new Wall(new Vector3(cellPosition.x + cellWidth / 2f, cellPosition.y, cellPosition.z), false, cellGrid[x, y]);
                     cellGrid[x, y].RightWall = rightWall;
                 }
 
                 if (y == height - 1)
                 {
-                    Wall topWall = new Wall(new Vector3(cellPosition.x, 0f, cellPosition.z + cellWidth / 2f), true, cellGrid[x, y]);
+                    Wall topWall = new Wall(new Vector3(cellPosition.x, cellPosition.y, cellPosition.z + cellWidth / 2f), true, cellGrid[x, y]);
                     cellGrid[x, y].TopWall = topWall;
                 }
             }

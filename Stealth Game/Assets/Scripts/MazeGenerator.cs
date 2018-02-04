@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeGenerator : MonoBehaviour {
-
+public class MazeGenerator : MonoBehaviour
+{
     public Transform wallPrefab;
     [Range(1, 50)]
     public int width, height;
@@ -35,6 +35,12 @@ public class MazeGenerator : MonoBehaviour {
 
         // create walls
         WallCreator.CreateWallsForMaze(cells, transform, wallPrefab);
+
+        // create a plane
+        GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        plane.transform.SetParent(transform);
+        plane.transform.localPosition = -new Vector3(cellWidth / 2f, 0f, cellWidth / 2f);
+        plane.transform.localScale = new Vector3(width / 10f, 1, height / 10f) * cellWidth;
     }
 
     public void DestroyCurrentMaze ()
