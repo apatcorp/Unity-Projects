@@ -12,8 +12,30 @@ public class GameManager : MonoBehaviour
     List<Maze.Info> mazeObjects = new List<Maze.Info>();
 
     Maze.Info currentMaze;
+    public Dictionary<int, MazeCell> mazeCellDictionary
+    {
+        get
+        {
+            return currentMaze.mazeCellDict;
+        }
+    }
 
-	void Start ()
+    private static GameManager singleton = null;
+    public static GameManager Singleton
+    {
+        get
+        {
+            return singleton;
+        }
+    }
+
+    private void Awake()
+    {
+        if (singleton == null)
+            singleton = this;
+    }
+
+    void Start ()
     {
         // generate all the mazes
         foreach (Maze maze in mazes)

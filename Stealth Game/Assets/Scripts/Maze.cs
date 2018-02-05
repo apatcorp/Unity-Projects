@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Maze  {
 
     public Transform wallPrefab;
+    public GameObject mazeCellPrefab;
+
     [Range(1, 50)]
     public int width, height;
-    [Range(1, 5)]
+    [Range(1, 10)]
     public int cellWidth = 1;
 
     public MazeGenerator.Algorithm algorithm;
@@ -14,8 +17,8 @@ public class Maze  {
     [Range(1, 1000)]
     public int seed = 20;
 
-    public Material groundMaterial;
-
+    public Material floorMaterial;
+    public Material ceilingMaterial;
 
     public Info GenerateMaze (Transform parent)
     {
@@ -26,18 +29,13 @@ public class Maze  {
 
         // create cells
         Cell[,] cells = MazeGenerator.GernerateMazeGrid(width, height, cellWidth, algorithm, seed);
-;
+
         // create walls
         WallCreator.CreateWallsForMaze(cells, mazeHolder.transform, wallPrefab);
 
-        // create a plane
-        GameObject plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        plane.transform.SetParent(mazeHolder.transform);
-        plane.transform.localPosition = -new Vector3(cellWidth / 2f, 0f, cellWidth / 2f);
-        plane.transform.localScale = new Vector3(width / 10f, 1, height / 10f) * cellWidth;
-
-        if (groundMaterial != null)
-            plane.GetComponent<MeshRenderer>().material = groundMaterial;
+        // create floor and ceiling of the maze
+        CreateFloor(mazeHolder.transform);
+        CreateCeiling(mazeHolder.transform);
 
         // set it invisibel by default
         mazeHolder.SetActive(false);
@@ -45,7 +43,55 @@ public class Maze  {
         // create a new maze info object
         Info mazeInfo = new Info(mazeHolder, cells, width, height, cellWidth);
 
+        // create lights in the maze
+        CreateLights(ref mazeInfo, mazeHolder.transform);
+
         return mazeInfo;
+    }
+
+    void CreateFloor (Transform mazeHolder)
+    {
+        // create a bottom plane
+        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        floor.transform.SetParent(mazeHolder);
+        floor.transform.localPosition = -new Vector3(cellWidth / 2f, 0f, cellWidth / 2f);
+        floor.transform.localScale = new Vector3(width / 10f, 1, height / 10f) * cellWidth;
+
+        if (floorMaterial != null)
+            floor.GetComponent<MeshRenderer>().material = floorMaterial;
+    }
+
+    void CreateCeiling (Transform mazeHolder)
+    {
+        // create a top plane
+        GameObject ceiling = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        ceiling.transform.SetParent(mazeHolder);
+        ceiling.transform.localPosition = -new Vector3(cellWidth / 2f, -cellWidth, cellWidth / 2f);
+        ceiling.transform.rotation = Quaternion.Euler(180f, 0f, 0f);
+        ceiling.transform.localScale = new Vector3(width, .15f, height) * cellWidth;
+
+        if (ceilingMaterial != null)
+            ceiling.GetComponent<MeshRenderer>().material = ceilingMaterial;
+    }
+
+    void CreateLights (ref Info mazeInfo, Transform mazeHolder)
+    {
+        for (int y = 0; y < mazeInfo.height; y++)
+        {
+            for (int x = 0; x < mazeInfo.width; x++)
+            {
+                if (x%2 == 0 && y%2 == 0 || (y % 2 != 0 && x % 2 != 0))
+                {
+                    // create maze cell
+                    GameObject mazeCell = GameObject.Instantiate(mazeCellPrefab, mazeHolder);
+                    mazeCell.name = "MazeCell(" + x + ", " + y + ")";
+                    MazeCell mazeCellComp = mazeCell.GetComponent<MazeCell>();
+                    mazeCellComp.SetupMazeCell(mazeInfo.cells[x, y]);
+
+                    mazeInfo.mazeCellDict.Add(mazeCell.transform.GetInstanceID(), mazeCellComp);
+                } 
+            }
+        }
     }
 
     public class Info
@@ -57,6 +103,8 @@ public class Maze  {
         public int height { get; private set; }
         public int cellWidth { get; private set; }
 
+        public Dictionary<int, MazeCell> mazeCellDict { get; private set; }
+
         public Info(GameObject mazeObject, Cell[,] cells, int width, int height, int cellWidth)
         {
             this.mazeObject = mazeObject;
@@ -64,6 +112,7 @@ public class Maze  {
             this.width = width;
             this.height = height;
             this.cellWidth = cellWidth;
+            mazeCellDict = new Dictionary<int, MazeCell>();
         }
     }
 }

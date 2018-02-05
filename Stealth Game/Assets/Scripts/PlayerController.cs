@@ -32,8 +32,10 @@ public class PlayerController : MonoBehaviour {
 
     Rigidbody playerRigidBody;
 
+
     private void Start()
     {
+        tag = "Player";
         playerRigidBody = GetComponent<Rigidbody>();
         playerRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
         cameraTransform = transform.GetChild(0);
