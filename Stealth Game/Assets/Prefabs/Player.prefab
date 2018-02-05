@@ -121,7 +121,7 @@ MeshRenderer:
   m_GameObject: {fileID: 1100481327628080}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraTransform: {fileID: 4341309023531936}
-  speed: 10
+  speed: 5
   rotationSpeedY: 5
   rotationSpeedX: 5
 --- !u!124 &124482612551088664
