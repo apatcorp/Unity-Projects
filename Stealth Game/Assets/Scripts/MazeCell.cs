@@ -14,16 +14,25 @@ public class MazeCell : MonoBehaviour
 
     [Header("Light properties")]
     public float intensity = 2;
+    [Range(10, 180)]
     public float spotAngle = 90f;
+    [Range(0f, 20f)]
+    public float rangeModifier = 10f;
     public Color lightColor = Color.white;
     public LightShadows shadowType = LightShadows.Hard;
 
     [Header("Reflection properties")]
     public bool boxProjection = true;
-    public float RPintensity = 2;
+    [Range(0.01f, 5f)]
+    public float reflectionIntensity = 1;
     public UnityEngine.Rendering.ReflectionProbeRefreshMode refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.OnAwake;
-    
-    bool lightOn = false;
+
+    // flickering
+    float minTime;
+    float maxTime;
+
+    bool lightIsOn = true;
+    bool playerInRange = false;
     Color emissionColor;
     Vector3 worldPosition;
 
@@ -32,15 +41,19 @@ public class MazeCell : MonoBehaviour
 
     private void Start()
     {
-        player = FindObjectOfType<PlayerController>().transform;
+        Random.InitState(name.GetHashCode());
 
-        StartCoroutine("Flickering");
+        minTime = Random.Range(0.03f, 0.1f);
+        maxTime = Random.Range(0.2f, 1f);
+
+        player = FindObjectOfType<PlayerController>().transform;
     }
 
-    public void SetupMazeCell(Cell mazeCell)
+    public void SetupMazeCell(Cell mazeCell, bool lights)
     {
         this.mazeCell = mazeCell;
         worldPosition = mazeCell.worldPosition;
+        transform.position = worldPosition;
 
         // get light and reflection probe components
         ceilingLight = GetComponentInChildren<Light>();
@@ -48,20 +61,28 @@ public class MazeCell : MonoBehaviour
         lightMaterial = GetComponentInChildren<MeshRenderer>().material;
         emissionColor = lightMaterial.GetColor("_EmissionColor");
 
-        // setup the ceiling light's position, rotation and scale
-        transform.position = mazeCell.worldPosition;
-        ceilingLight.transform.localPosition += Vector3.up * mazeCell.cellWidth / 2f;
-        ceilingLight.transform.localScale = Vector3.one * mazeCell.cellWidth / scalingFactor;
-        ceilingLight.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
-        // setup the light component
-        ceilingLight.type = LightType.Spot;
-        ceilingLight.spotAngle = spotAngle;
-        ceilingLight.color = lightColor;
-        ceilingLight.intensity = intensity;
-        ceilingLight.renderMode = LightRenderMode.ForcePixel;
-        ceilingLight.shadows = shadowType;
-        ceilingLight.range = mazeCell.cellWidth + scalingFactor;
+        if (lights)
+        {
+            // setup the ceiling light's position, rotation and scale
+            ceilingLight.transform.localPosition += Vector3.up * mazeCell.cellWidth / 2f;
+            ceilingLight.transform.localScale = Vector3.one * mazeCell.cellWidth / scalingFactor;
+            ceilingLight.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+            // setup the light component
+            ceilingLight.type = LightType.Spot;
+            ceilingLight.spotAngle = spotAngle;
+            ceilingLight.color = lightColor;
+            ceilingLight.intensity = intensity;
+            ceilingLight.renderMode = LightRenderMode.ForcePixel;
+            ceilingLight.shadows = shadowType;
+            ceilingLight.range = mazeCell.cellWidth + rangeModifier;
+        }
+        else
+        {
+            // disbale ceiling lights
+            ceilingLight.gameObject.SetActive(false);
+        }
 
         // setup the reflection probe
         reflectionProbe.size = Vector3.one * 2f * mazeCell.cellWidth;
@@ -70,39 +91,38 @@ public class MazeCell : MonoBehaviour
         reflectionProbe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
         reflectionProbe.refreshMode = refreshMode;
         reflectionProbe.importance = 1;
-        reflectionProbe.intensity = RPintensity;
+        reflectionProbe.intensity = reflectionIntensity;
+
+        ToogleLight();
     }
 
-    void ToggleLight ()
+    void ToogleLight ()
     {
-        ceilingLight.enabled = lightOn;
-        lightMaterial.SetColor("_EmissionColor", lightOn ? emissionColor: Color.black);
+        lightIsOn = !lightIsOn;
+        ceilingLight.enabled = lightIsOn;
+        lightMaterial.SetColor("_EmissionColor", lightIsOn ? emissionColor : Color.black);
     }
 
-    void ToogleReflectionProbe ()
-    {
-        reflectionProbe.enabled = lightOn;
-    }
-
-    private void Update()
+    void Update()
     {
         if (player)
         {
             if (PlayerInRange())
             {
-                if (!lightOn)
+                if (!playerInRange)
                 {
-                    lightOn = true;
-                    ToggleLight();
-                    //ToogleReflectionProbe();
+                    playerInRange = true;
+                    ToogleLight();
+                    StartCoroutine("Flickering");
                 }
             } else
             {
-                if (lightOn)
+                if (playerInRange)
                 {
-                    lightOn = false;
-                    ToggleLight();
-                    //ToogleReflectionProbe();
+                    StopCoroutine("Flickering");
+                    
+                    ToogleLight();
+                    playerInRange = false;
                 }
             }
         }     
@@ -160,20 +180,21 @@ public class MazeCell : MonoBehaviour
 
     IEnumerator Flickering ()
     {
-        while (true)
+        while (playerInRange)
         {
-            int randomno = Random.Range(0, 1);
-            float seconds = Random.Range(0.1f, 3.2f);
+            int randomOnOff = Random.Range(0, 2);
+            float seconds = Random.Range(minTime, maxTime);
 
-            if (randomno == 0)
+            if (randomOnOff == 0)
             {
-                lightOn = false;
-            } else
-            {
-                lightOn = true;
+                ceilingLight.enabled = false;
+                lightMaterial.SetColor("_EmissionColor", Color.black);
             }
-
-            ToggleLight();
+            else
+            {
+                ceilingLight.enabled = true;
+                lightMaterial.SetColor("_EmissionColor", emissionColor);
+            }
 
             yield return new WaitForSeconds(seconds);
         }

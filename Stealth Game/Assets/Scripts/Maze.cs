@@ -17,6 +17,9 @@ public class Maze  {
     [Range(1, 1000)]
     public int seed = 20;
 
+    [Range(2, 8)]
+    public int lightDensity = 2;
+
     public Material floorMaterial;
     public Material ceilingMaterial;
 
@@ -80,16 +83,13 @@ public class Maze  {
         {
             for (int x = 0; x < mazeInfo.width; x++)
             {
-                if (x%2 == 0 && y%2 == 0 || (y % 2 != 0 && x % 2 != 0))
-                {
-                    // create maze cell
-                    GameObject mazeCell = GameObject.Instantiate(mazeCellPrefab, mazeHolder);
-                    mazeCell.name = "MazeCell(" + x + ", " + y + ")";
-                    MazeCell mazeCellComp = mazeCell.GetComponent<MazeCell>();
-                    mazeCellComp.SetupMazeCell(mazeInfo.cells[x, y]);
+                // create maze cell
+                GameObject mazeCell = GameObject.Instantiate(mazeCellPrefab, mazeHolder);
+                mazeCell.name = "MazeCell(" + x + ", " + y + ")";
 
-                    mazeInfo.mazeCellDict.Add(mazeCell.transform.GetInstanceID(), mazeCellComp);
-                } 
+                MazeCell mazeCellComp = mazeCell.GetComponent<MazeCell>();
+                // enable lights at specific conditions
+                mazeCellComp.SetupMazeCell(mazeInfo.cells[x, y], (x % lightDensity == 0 && y % lightDensity == 0) || (y % lightDensity != 0 && x % lightDensity != 0));
             }
         }
     }
@@ -103,8 +103,6 @@ public class Maze  {
         public int height { get; private set; }
         public int cellWidth { get; private set; }
 
-        public Dictionary<int, MazeCell> mazeCellDict { get; private set; }
-
         public Info(GameObject mazeObject, Cell[,] cells, int width, int height, int cellWidth)
         {
             this.mazeObject = mazeObject;
@@ -112,7 +110,6 @@ public class Maze  {
             this.width = width;
             this.height = height;
             this.cellWidth = cellWidth;
-            mazeCellDict = new Dictionary<int, MazeCell>();
         }
     }
 }

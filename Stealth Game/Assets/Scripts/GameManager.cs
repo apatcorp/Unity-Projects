@@ -12,14 +12,7 @@ public class GameManager : MonoBehaviour
     List<Maze.Info> mazeObjects = new List<Maze.Info>();
 
     Maze.Info currentMaze;
-    public Dictionary<int, MazeCell> mazeCellDictionary
-    {
-        get
-        {
-            return currentMaze.mazeCellDict;
-        }
-    }
-
+   
     private static GameManager singleton = null;
     public static GameManager Singleton
     {

@@ -191,12 +191,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f2a579fc14ea394da27305230902afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 2
-  spotAngle: 90
+  intensity: 3
+  spotAngle: 75
+  rangeModifier: 10
   lightColor: {r: 1, g: 1, b: 1, a: 1}
-  shadowType: 1
-  boxProjection: 1
-  RPintensity: 2
+  shadowType: 0
+  boxProjection: 0
+  reflectionIntensity: 0.6
   refreshMode: 1
 --- !u!135 &135150820673452860
 SphereCollider:
@@ -220,7 +221,7 @@ ReflectionProbe:
   serializedVersion: 2
   m_Type: 0
   m_Mode: 1
-  m_RefreshMode: 0
+  m_RefreshMode: 1
   m_TimeSlicingMode: 0
   m_Resolution: 128
   m_UpdateFrequency: 0
@@ -234,10 +235,10 @@ ReflectionProbe:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IntensityMultiplier: 2
+  m_IntensityMultiplier: 1
   m_BlendDistance: 1
   m_HDR: 1
-  m_BoxProjection: 1
+  m_BoxProjection: 0
   m_RenderDynamicObjects: 0
   m_UseOcclusionCulling: 1
   m_Importance: 1

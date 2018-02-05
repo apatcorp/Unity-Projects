@@ -387,7 +387,8 @@ MonoBehaviour:
     height: 10
     cellWidth: 10
     algorithm: 2
-    seed: 489
+    seed: 167
+    lightDensity: 4
     floorMaterial: {fileID: 2100000, guid: 77fe8e900c9cfee47b2d27e7ce195f0e, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 738c9ddc8fcd0074b8e0ffe6a96fad3b, type: 2}
   - wallPrefab: {fileID: 4054140886278796, guid: 4a31e99fc5d2f5e48b4e58a68a0ee09f,
@@ -399,6 +400,7 @@ MonoBehaviour:
     cellWidth: 7
     algorithm: 1
     seed: 193
+    lightDensity: 2
     floorMaterial: {fileID: 2100000, guid: 77fe8e900c9cfee47b2d27e7ce195f0e, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 738c9ddc8fcd0074b8e0ffe6a96fad3b, type: 2}
 --- !u!4 &1522512852
