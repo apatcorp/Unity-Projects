@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
     bool moving = true;
     bool running = false;
     float speedMultiplier = 1.9f;
-    float normalizedFootStep = 10f;
+    float normalizedFootStep = 3f;
 
     private void Start()
     {
@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour {
         {
             footSteps.Play();
 
-            yield return new WaitForSeconds(3f / speed);
+            yield return new WaitForSeconds(normalizedFootStep / speed);
         }
     }
 

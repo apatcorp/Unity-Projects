@@ -55,11 +55,12 @@ public class Maze  {
     void CreateFloor (Transform mazeHolder)
     {
         // create a bottom plane
-        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        floor.name = "Floor";
         floor.transform.SetParent(mazeHolder);
-        floor.transform.localPosition = -new Vector3(cellWidth / 2f, 0f, cellWidth / 2f);
-        floor.transform.localScale = new Vector3(width / 10f, 1, height / 10f) * cellWidth;
-
+        floor.transform.localPosition = -new Vector3(cellWidth / 2f, -0.2f * cellWidth, cellWidth / 2f);
+        floor.transform.localScale = new Vector3(width, .02f, height) * cellWidth;
+        
         if (floorMaterial != null)
             floor.GetComponent<MeshRenderer>().material = floorMaterial;
     }
@@ -68,10 +69,10 @@ public class Maze  {
     {
         // create a top plane
         GameObject ceiling = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        ceiling.name = "Ceiling";
         ceiling.transform.SetParent(mazeHolder);
-        ceiling.transform.localPosition = -new Vector3(cellWidth / 2f, -cellWidth, cellWidth / 2f);
-        ceiling.transform.rotation = Quaternion.Euler(180f, 0f, 0f);
-        ceiling.transform.localScale = new Vector3(width, .15f, height) * cellWidth;
+        ceiling.transform.localPosition = -new Vector3(cellWidth / 2f, -cellWidth + 0.1f, cellWidth / 2f);
+        ceiling.transform.localScale = new Vector3(width, .1f, height) * cellWidth;
 
         if (ceilingMaterial != null)
             ceiling.GetComponent<MeshRenderer>().material = ceilingMaterial;
