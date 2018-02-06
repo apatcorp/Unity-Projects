@@ -292,7 +292,7 @@ MonoBehaviour:
       type: 2}
     width: 10
     height: 10
-    cellWidth: 10
+    cellWidth: 7
     algorithm: 2
     seed: 167
     lightDensity: 8

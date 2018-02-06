@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     public Transform cameraTransform;
+    Vector3 cameraInitialPosition;
 
     // movement
     public float speed = 5f;
@@ -33,7 +34,10 @@ public class PlayerController : MonoBehaviour {
     Rigidbody playerRigidBody;
 
     AudioSource footSteps;
-    bool walking = false;
+    bool moving = true;
+    bool running = false;
+    float speedMultiplier = 1.9f;
+    float normalizedFootStep = 10f;
 
     private void Start()
     {
@@ -41,6 +45,7 @@ public class PlayerController : MonoBehaviour {
         playerRigidBody = GetComponent<Rigidbody>();
         playerRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
         cameraTransform = transform.GetChild(0);
+        cameraInitialPosition = cameraTransform.localPosition;
 
         footSteps = AudioManager.InstantiateAudioSource(transform.position, AudioManager.Singleton.audios[2], transform);
     }
@@ -50,19 +55,38 @@ public class PlayerController : MonoBehaviour {
         // input from keys
         Vector3 inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).normalized;
 
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (!running)
+            {
+                speed *= speedMultiplier;
+                running = true;
+            }          
+        } else
+        {
+            if (running)
+            {
+                speed /= speedMultiplier;
+                running = false;
+            }
+        }
+
         if (inputDirection.x != 0 || inputDirection.z != 0)
         {
-            if (!walking)
+            if (!moving)
             {
-                walking = true;
+                moving = true;
+                StopCoroutine("Breathing");
+                cameraTransform.localPosition = cameraInitialPosition;
                 StartCoroutine("FootStep");
             }
         } else
         {
-            if (walking)
+            if (moving)
             {
-                walking = false;
+                moving = false;
                 StopCoroutine("FootStep");
+                StartCoroutine("Breathing");
             }
         }
 
@@ -96,11 +120,23 @@ public class PlayerController : MonoBehaviour {
 
     IEnumerator FootStep ()
     {
-        while (walking)
+        while (moving)
         {
             footSteps.Play();
 
-            yield return new WaitForSeconds(footSteps.clip.length);
+            yield return new WaitForSeconds(3f / speed);
+        }
+    }
+
+    IEnumerator Breathing ()
+    {
+        while (!moving)
+        {
+            Vector3 targetPosition = cameraTransform.position + new Vector3(0f, .2f * Mathf.Sin(2f * Time.time), 0f);
+
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, Time.deltaTime);
+
+            yield return null;
         }
     }
 }
