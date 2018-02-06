@@ -33,11 +33,14 @@ public class MazeCell : MonoBehaviour
 
     bool lightIsOn = true;
     bool playerInRange = false;
+    bool activeCell = false;
     Color emissionColor;
     Vector3 worldPosition;
 
     Transform player;
-    Bounds bounds;
+    Vector3 directionToPlayer;
+
+    AudioSource flickering;
 
     private void Start()
     {
@@ -77,6 +80,9 @@ public class MazeCell : MonoBehaviour
             ceilingLight.renderMode = LightRenderMode.ForcePixel;
             ceilingLight.shadows = shadowType;
             ceilingLight.range = mazeCell.cellWidth + rangeModifier;
+
+            // create two audio sources
+            flickering = AudioManager.InstantiateAudioSource(ceilingLight.transform.position, AudioManager.Singleton.audios[1], transform);
         }
         else
         {
@@ -93,6 +99,8 @@ public class MazeCell : MonoBehaviour
         reflectionProbe.importance = 1;
         reflectionProbe.intensity = reflectionIntensity;
 
+        activeCell = lights;
+
         ToogleLight();
     }
 
@@ -105,7 +113,7 @@ public class MazeCell : MonoBehaviour
 
     void Update()
     {
-        if (player)
+        if (player && activeCell)
         {
             if (PlayerInRange())
             {
@@ -119,8 +127,7 @@ public class MazeCell : MonoBehaviour
             {
                 if (playerInRange)
                 {
-                    StopCoroutine("Flickering");
-                    
+                    StopCoroutine("Flickering");                 
                     ToogleLight();
                     playerInRange = false;
                 }
@@ -178,24 +185,55 @@ public class MazeCell : MonoBehaviour
         return playerInRange;
     }
 
+    void AdjustVolume ()
+    {
+        directionToPlayer = (player.position - ceilingLight.transform.position).normalized;
+
+        Ray ray = new Ray(ceilingLight.transform.position, directionToPlayer);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            float distance = (hit.collider.tag == "Player") ? hit.distance : Vector3.Distance(ray.origin, player.position);
+
+            flickering.volume = (hit.collider.tag == "Player") ? 1f / distance : (1f / distance) * 0.4f;
+            flickering.volume = Mathf.Clamp01(flickering.volume);
+        }
+    }
+
     IEnumerator Flickering ()
     {
+        bool lightIsOn = false;
+
         while (playerInRange)
         {
             int randomOnOff = Random.Range(0, 2);
             float seconds = Random.Range(minTime, maxTime);
 
+            AdjustVolume();
+           
             if (randomOnOff == 0)
             {
-                ceilingLight.enabled = false;
-                lightMaterial.SetColor("_EmissionColor", Color.black);
+                if (lightIsOn)
+                {
+                    lightIsOn = false;
+                    ceilingLight.enabled = lightIsOn;
+                    lightMaterial.SetColor("_EmissionColor", Color.black);
+                    flickering.Stop();
+                }
             }
             else
             {
-                ceilingLight.enabled = true;
-                lightMaterial.SetColor("_EmissionColor", emissionColor);
+                if (!lightIsOn)
+                {
+                    lightIsOn = true;
+                    ceilingLight.enabled = lightIsOn;
+                    lightMaterial.SetColor("_EmissionColor", emissionColor);
+                    flickering.Play();
+                }
             }
 
+            
             yield return new WaitForSeconds(seconds);
         }
     }

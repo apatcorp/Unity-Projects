@@ -89,7 +89,7 @@ public class Maze  {
 
                 MazeCell mazeCellComp = mazeCell.GetComponent<MazeCell>();
                 // enable lights at specific conditions
-                mazeCellComp.SetupMazeCell(mazeInfo.cells[x, y], (x % lightDensity == 0 && y % lightDensity == 0) || (y % lightDensity != 0 && x % lightDensity != 0));
+                mazeCellComp.SetupMazeCell(mazeInfo.cells[x, y], (x % lightDensity == 0));
             }
         }
     }

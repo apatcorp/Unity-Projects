@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour {
 
     Rigidbody playerRigidBody;
 
+    AudioSource footSteps;
+    bool walking = false;
 
     private void Start()
     {
@@ -39,12 +41,30 @@ public class PlayerController : MonoBehaviour {
         playerRigidBody = GetComponent<Rigidbody>();
         playerRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
         cameraTransform = transform.GetChild(0);
+
+        footSteps = AudioManager.InstantiateAudioSource(transform.position, AudioManager.Singleton.audios[2], transform);
     }
 
     void Update ()
     {
         // input from keys
         Vector3 inputDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).normalized;
+
+        if (inputDirection.x != 0 || inputDirection.z != 0)
+        {
+            if (!walking)
+            {
+                walking = true;
+                StartCoroutine("FootStep");
+            }
+        } else
+        {
+            if (walking)
+            {
+                walking = false;
+                StopCoroutine("FootStep");
+            }
+        }
 
         // caluclate velocity
         targetVelocity = inputDirection * speed;
@@ -72,5 +92,15 @@ public class PlayerController : MonoBehaviour {
     {
         // move player
         playerRigidBody.MovePosition(playerRigidBody.position + transform.TransformDirection(velocity) * Time.fixedDeltaTime);
+    }
+
+    IEnumerator FootStep ()
+    {
+        while (walking)
+        {
+            footSteps.Play();
+
+            yield return new WaitForSeconds(footSteps.clip.length);
+        }
     }
 }

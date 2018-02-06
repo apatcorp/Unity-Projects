@@ -142,10 +142,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audios:
   - clip: {fileID: 8300000, guid: 45abb745b0fed424eb1223082c6c44e0, type: 3}
-    volume: 0.662
+    volume: 0.1
     pitch: 1
     playOnAwake: 1
     loop: 1
+    minDistance: 0
+    maxDistance: 4
+  - clip: {fileID: 8300000, guid: d75be0d491de943409d0dd2cde8f2f55, type: 3}
+    volume: 0.03
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    minDistance: 0
+    maxDistance: 0.1
+  - clip: {fileID: 8300000, guid: 6b03946d3664b1e4b8696501a559d926, type: 3}
+    volume: 0.05
+    pitch: 0.6
+    playOnAwake: 0
+    loop: 0
+    minDistance: 0
+    maxDistance: 4
 --- !u!4 &658826596
 Transform:
   m_ObjectHideFlags: 0
@@ -169,6 +185,7 @@ GameObject:
   - component: {fileID: 1481222617}
   - component: {fileID: 1481222616}
   - component: {fileID: 1481222615}
+  - component: {fileID: 1481222618}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -232,6 +249,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &1481222618
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1481222614}
+  m_Enabled: 1
 --- !u!1 &1522512850
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +295,7 @@ MonoBehaviour:
     cellWidth: 10
     algorithm: 2
     seed: 167
-    lightDensity: 4
+    lightDensity: 8
     floorMaterial: {fileID: 2100000, guid: 77fe8e900c9cfee47b2d27e7ce195f0e, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 738c9ddc8fcd0074b8e0ffe6a96fad3b, type: 2}
   - wallPrefab: {fileID: 4054140886278796, guid: 4a31e99fc5d2f5e48b4e58a68a0ee09f,

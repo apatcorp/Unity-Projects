@@ -59,6 +59,6 @@ public class GameManager : MonoBehaviour
         // create the player at position
         GameObject playerGO = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
 
-        AudioManager.PlayAudio(playerGO.transform.position, AudioManager.Singleton.audios[0], playerGO.transform);
+        AudioManager.InstantiateAudioSource(playerGO.transform.position, AudioManager.Singleton.audios[0], playerGO.transform);
     }
 }

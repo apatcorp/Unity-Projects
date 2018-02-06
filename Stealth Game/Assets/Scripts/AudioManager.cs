@@ -22,9 +22,9 @@ public class AudioManager : MonoBehaviour {
     }
 
 
-	public static void PlayAudio(Vector3 audioSourcePosition, Audio audio, Transform parent)
+    public static AudioSource InstantiateAudioSource(Vector3 audioSourcePosition, Audio audio, Transform parent)
     {
-        GameObject obj = new GameObject("AudioSource");
+        GameObject obj = new GameObject("AudioSource: " + parent.name);
         obj.transform.position = audioSourcePosition;
 
         if (parent != null)
@@ -38,7 +38,14 @@ public class AudioManager : MonoBehaviour {
         source.volume = audio.volume;
         source.loop = audio.loop;
 
-        source.Play();
+        source.rolloffMode = AudioRolloffMode.Logarithmic;
+        source.minDistance = audio.minDistance;
+        source.maxDistance = audio.maxDistance;
+
+        if (!source.isPlaying && source.playOnAwake)
+            source.Play();
+
+        return source;
     }
 }
 
@@ -53,4 +60,7 @@ public class Audio
 
     public bool playOnAwake;
     public bool loop;
+
+    [Range(0, 500)]
+    public float minDistance, maxDistance;
 }
