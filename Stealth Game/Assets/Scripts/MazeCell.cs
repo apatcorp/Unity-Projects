@@ -11,6 +11,9 @@ public class MazeCell : MonoBehaviour
 
     Cell mazeCell;
 
+    [Header("Light Object")]
+    public Transform lampObject;
+
     [Header("Reflection properties")]
     public bool boxProjection = true;
     [Range(0.01f, 5f)]
@@ -42,7 +45,7 @@ public class MazeCell : MonoBehaviour
 
         // setup the light 
         lightActiveInCell = lights;
-        lightController = GetComponentInChildren<LightController>();
+        lightController = lampObject.GetComponent<LightController>();
         lightController.gameObject.SetActive(lightActiveInCell);
         if (lightActiveInCell)
             lightController.SetupLights(this.mazeCell);  

@@ -11,9 +11,18 @@ public class LightController : MonoBehaviour {
     Cell cellInfo;
 
     bool lightIsOn = false;
+
     // flickering
-    float minTime;
-    float maxTime;
+    [Header("Flickering")]
+    public bool flickering = true;
+    [Range(0.01f, 5f)]
+    public float minTimeUntilNextFlicker = 0.05f;
+    [Range(0.05f, 15f)]
+    public float maxTimeUntiNextFlicker = 2f;
+    [Range(0.01f, .05f)]
+    public float minflickerTime = .05f;
+    [Range(0.1f, 2f)]
+    public float maxflickerTime = .1f;
 
     Transform player;
 
@@ -25,10 +34,6 @@ public class LightController : MonoBehaviour {
     public void SetupLights (Cell cellInfo)
     {
         this.cellInfo = cellInfo;
-
-        // set random range of flickering
-        minTime = Random.Range(0.03f, 0.1f);
-        maxTime = Random.Range(0.2f, 0.6f);
 
         // position the light component at the ceiling    
         transform.localScale = Vector3.one * cellInfo.cellWidth / scalingFactor;
@@ -46,7 +51,8 @@ public class LightController : MonoBehaviour {
     {
         lightIsOn = !lightIsOn;
 
-        PerformFlickering();
+        if (flickering)
+            PerformFlickering();
 
         foreach (LightGroup lightGroup in lightGroups)
         {
@@ -56,8 +62,10 @@ public class LightController : MonoBehaviour {
 
     void AdjustVolume()
     {
+        // find direction vector from light object to player
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
 
+        // cast a ray to that player and adjust the sound accordingly
         Ray ray = new Ray(transform.position, directionToPlayer);
         RaycastHit hit;
 
@@ -90,37 +98,38 @@ public class LightController : MonoBehaviour {
 
     IEnumerator Flickering(LightGroup group)
     {
-        bool localLightIsOn = false;
+        // set local light is on variable
+        int localLightIsOn = 0;
+        float secondsUntilNextFlicker = 0f;
+        float flickerTime = 0f;
 
         while (lightIsOn)
         {
-            int randomOnOff = Random.Range(0, 2);
-            float seconds = Random.Range(minTime, maxTime);
+            // define randomly whether this light group's lights are on (1) or off (0)
+            localLightIsOn = Random.Range(0, 2);
+            secondsUntilNextFlicker = Random.Range(minTimeUntilNextFlicker, maxTimeUntiNextFlicker);
+            flickerTime = Random.Range(minflickerTime, maxflickerTime);
 
             AdjustVolume();
 
-            if (randomOnOff == 0)
+            if (localLightIsOn == 0)
             {
-                if (localLightIsOn)
-                {
-                    localLightIsOn = false;
-
-                    group.EnableAllLights(localLightIsOn);
-                    group.audioSource.Stop();
-                }
+                group.EnableAllLights(false);
+                group.audioSource.Stop();
+                yield return new WaitForSeconds(flickerTime);
+                group.EnableAllLights(true);
+                group.audioSource.Play();
             }
             else
             {
-                if (!localLightIsOn)
-                {
-                    localLightIsOn = true;
-
-                    group.EnableAllLights(localLightIsOn);
-                    group.audioSource.Play();
-                }
+                group.EnableAllLights(true);
+                group.audioSource.Play();
+                yield return new WaitForSeconds(flickerTime);
+                group.EnableAllLights(false);
+                group.audioSource.Stop();
             }
 
-            yield return new WaitForSeconds(seconds);
+            yield return new WaitForSeconds(secondsUntilNextFlicker);
         }
     }
 
@@ -145,7 +154,7 @@ public class LightController : MonoBehaviour {
 
         public void EnableAllLights (bool value)
         {
-            lightRenderer.material.SetColor("_EmissionColor", value ? Color.white : Color.black);
+            lightRenderer.material.SetColor("_EmissionColor", value ? lightColor : Color.black);
             lights.ForEach(x => x.enabled = value);
         }
 
