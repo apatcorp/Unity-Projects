@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour {
     public Transform cameraTransform;
     Vector3 cameraInitialPosition;
 
+    public GameObject lampPrefab;
+    public Transform hand;
+
     // movement
     public float speed = 5f;
     Vector3 targetVelocity;
@@ -41,13 +44,26 @@ public class PlayerController : MonoBehaviour {
 
     private void Start()
     {
+        if (cameraTransform == null)
+        {
+            Debug.LogError("No Camera attached");
+            return;
+        }
         tag = "Player";
         playerRigidBody = GetComponent<Rigidbody>();
         playerRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
-        cameraTransform = transform.GetChild(0);
         cameraInitialPosition = cameraTransform.localPosition;
 
         footSteps = AudioManager.InstantiateAudioSource(transform.position, AudioManager.Singleton.audios[2], transform);
+
+        CreateLamp();
+    }
+
+    void CreateLamp ()
+    {
+        GameObject lamp = Instantiate(lampPrefab, hand);
+        LightController lightController = lamp.GetComponent<LightController>();
+        lightController.SetupLights(transform, 20f, true);
     }
 
     void Update ()

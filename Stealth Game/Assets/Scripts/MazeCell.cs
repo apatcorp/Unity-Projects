@@ -68,14 +68,14 @@ public class MazeCell : MonoBehaviour
             {
                 if (!playerInRange)
                 {
-                    lightController.ToogleLights();
+                    lightController.ToggleLights();
                     playerInRange = true;
                 }
             } else
             {
                 if (playerInRange)
                 {
-                    lightController.ToogleLights();
+                    lightController.ToggleLights();
                     playerInRange = false;
                 }
             }

@@ -15,12 +15,13 @@ public class LightController : MonoBehaviour {
     // flickering
     [Header("Flickering")]
     public bool flickering = true;
+    public bool randomOnOff = true;
     [Range(0.01f, 5f)]
     public float minTimeUntilNextFlicker = 0.05f;
     [Range(0.05f, 15f)]
     public float maxTimeUntiNextFlicker = 2f;
     [Range(0.01f, .05f)]
-    public float minflickerTime = .05f;
+    public float minFlickerTime = .05f;
     [Range(0.1f, 2f)]
     public float maxflickerTime = .1f;
 
@@ -28,7 +29,22 @@ public class LightController : MonoBehaviour {
 
     private void Start()
     {
-        player = FindObjectOfType<PlayerController>().transform;
+        if (player == null)
+            player = FindObjectOfType<PlayerController>().transform;
+    }
+
+    public void SetupLights(Transform player, float range, bool lightsOn)
+    {
+        // setup the lights for each light in each light group
+        foreach (LightGroup lightGroup in lightGroups)
+        {
+            lightGroup.SetupLights(range);
+            lightGroup.EnableAllLights(lightsOn);
+        }
+
+        this.player = player;
+
+        ToggleLights();
     }
 
     public void SetupLights (Cell cellInfo)
@@ -47,7 +63,7 @@ public class LightController : MonoBehaviour {
         }
     }
 
-    public void ToogleLights()
+    public void ToggleLights()
     {
         lightIsOn = !lightIsOn;
 
@@ -108,26 +124,37 @@ public class LightController : MonoBehaviour {
             // define randomly whether this light group's lights are on (1) or off (0)
             localLightIsOn = Random.Range(0, 2);
             secondsUntilNextFlicker = Random.Range(minTimeUntilNextFlicker, maxTimeUntiNextFlicker);
-            flickerTime = Random.Range(minflickerTime, maxflickerTime);
+            flickerTime = Random.Range(minFlickerTime, maxflickerTime);
 
             AdjustVolume();
 
-            if (localLightIsOn == 0)
+            if (randomOnOff)
             {
-                group.EnableAllLights(false);
-                group.audioSource.Stop();
-                yield return new WaitForSeconds(flickerTime);
-                group.EnableAllLights(true);
-                group.audioSource.Play();
-            }
-            else
+                if (localLightIsOn == 0)
+                {
+                    group.PlayAudioForSeconds(0.08f);
+                    group.EnableAllLights(false);
+                    yield return new WaitForSeconds(flickerTime);
+                    group.PlayAudioForSeconds(0.08f);
+                    group.EnableAllLights(true);  
+                }
+                else
+                {
+                    group.PlayAudioForSeconds(0.08f);
+                    group.EnableAllLights(true);
+                    yield return new WaitForSeconds(flickerTime);
+                    group.PlayAudioForSeconds(0.08f);
+                    group.EnableAllLights(false);
+                }
+            } else
             {
-                group.EnableAllLights(true);
-                group.audioSource.Play();
+                group.PlayAudioForSeconds(0.08f);
+                group.EnableAllLights(false);               
                 yield return new WaitForSeconds(flickerTime);
-                group.EnableAllLights(false);
-                group.audioSource.Stop();
+                group.PlayAudioForSeconds(0.08f);
+                group.EnableAllLights(true);       
             }
+           
 
             yield return new WaitForSeconds(secondsUntilNextFlicker);
         }
@@ -158,19 +185,25 @@ public class LightController : MonoBehaviour {
             lights.ForEach(x => x.enabled = value);
         }
 
-        public void SetupLights (float cellWidth)
+        public void PlayAudioForSeconds (float seconds)
+        {
+            audioSource.Play();
+            audioSource.SetScheduledEndTime(AudioSettings.dspTime + seconds);
+        }
+
+        public void SetupLights (float range)
         {
             for (int i = 0; i < lightGroup.childCount; i++)
             {
                 Light light = lightGroup.GetChild(i).GetComponent<Light>();
-                SetupLight(light, cellWidth);
+                SetupLight(light, range);
                 lights.Add(light);
             }
 
             audioSource = AudioManager.InstantiateAudioSource(lightGroup.position, AudioManager.Singleton.audios[1], lightGroup);
         }
 
-        void SetupLight(Light light, float cellWidth)
+        void SetupLight(Light light, float range)
         {
             light.type = LightType.Spot;
             light.spotAngle = spotAngle;
@@ -178,7 +211,7 @@ public class LightController : MonoBehaviour {
             light.intensity = intensity;
             light.renderMode = LightRenderMode.ForcePixel;
             light.shadows = shadowType;
-            light.range = cellWidth + rangeModifier;
+            light.range = range + rangeModifier;
         }
     }
 }
