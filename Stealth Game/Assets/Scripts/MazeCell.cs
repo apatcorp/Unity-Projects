@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MazeCell : MonoBehaviour
 {
@@ -15,6 +13,7 @@ public class MazeCell : MonoBehaviour
     [Range(0.01f, 5f)]
     public float reflectionIntensity = 1;
     public UnityEngine.Rendering.ReflectionProbeRefreshMode refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.OnAwake;
+    public LayerMask cullingMask;
  
     bool playerInRange = false;
     bool lightInCell = false;
@@ -73,6 +72,7 @@ public class MazeCell : MonoBehaviour
         reflectionProbe = GetComponentInChildren<ReflectionProbe>();
         if (reflectionProbe != null)
         {
+            reflectionProbe.cullingMask = cullingMask;
             reflectionProbe.size = Vector3.one * 2f * mazeCell.cellWidth;
             reflectionProbe.boxProjection = boxProjection;
             reflectionProbe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;

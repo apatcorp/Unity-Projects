@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4804244292812458}
   - component: {fileID: 108418175557414580}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +35,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4914532605085052}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light Group (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4755504167842462}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light Group (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,7 +65,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4943394759464314}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4515606938471252}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light Group (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4733859435903476}
   - component: {fileID: 114422343510370504}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Neon Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4839399365764962}
   - component: {fileID: 108248660935232440}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4731782947921678}
   - component: {fileID: 108147188242920232}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -144,7 +144,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4143647491117892}
   - component: {fileID: 108033451915086320}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4394179024395492}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 4985873852443106}
   - component: {fileID: 33570732883267790}
   - component: {fileID: 23508404595419470}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Classic fluorescent lamp (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4886673601551882}
   - component: {fileID: 108420589446679276}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 4678512137623622}
   - component: {fileID: 33239146895351194}
   - component: {fileID: 23644476358566882}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Classic fluorescent lamp (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4435703003301156}
   - component: {fileID: 108408833644163570}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 4712997105182522}
   - component: {fileID: 33403496128931666}
   - component: {fileID: 23349538381816642}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Classic fluorescent lamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}

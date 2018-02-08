@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4070669943657588}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 4061618865390302}
   - component: {fileID: 33629320815054588}
   - component: {fileID: 23723992803921254}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RoundLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +52,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4416563467392182}
   - component: {fileID: 114086365450100730}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Circular Lamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4694010622636252}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4194423955808292}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light Group (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4926750997209050}
   - component: {fileID: 108551769964040498}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Light (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

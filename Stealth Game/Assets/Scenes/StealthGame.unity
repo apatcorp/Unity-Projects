@@ -153,6 +153,9 @@ MonoBehaviour:
     lightDensity: 3
     floorMaterial: {fileID: 2100000, guid: 77fe8e900c9cfee47b2d27e7ce195f0e, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 738c9ddc8fcd0074b8e0ffe6a96fad3b, type: 2}
+    environmentLayer:
+      serializedVersion: 2
+      m_Bits: 1024
 --- !u!4 &254803313
 Transform:
   m_ObjectHideFlags: 0

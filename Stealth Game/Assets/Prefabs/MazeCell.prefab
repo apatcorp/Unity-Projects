@@ -113,9 +113,12 @@ MonoBehaviour:
   lampObjectPrefab: {fileID: 1292555109703714, guid: 5bcfbb825e0f2da46876ed281b12cfcd,
     type: 2}
   parentOfLightObject: {fileID: 4700054481390512}
-  boxProjection: 0
-  reflectionIntensity: 1
-  refreshMode: 1
+  boxProjection: 1
+  reflectionIntensity: 2
+  refreshMode: 0
+  cullingMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!215 &215496666809114024
 ReflectionProbe:
   m_ObjectHideFlags: 1

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Maze  {
 
+    [Header("Wall Parameters")]
     public Transform wallPrefab;
     public GameObject mazeCellPrefab;
-
+ 
     [Range(1, 50)]
     public int width = 10, height = 10;
     [Range(1, 10)]
@@ -20,8 +21,10 @@ public class Maze  {
     [Range(2, 8)]
     public int lightDensity = 2;
 
+    [Header("Floor and Ceiling Mat")]
     public Material floorMaterial;
     public Material ceilingMaterial;
+
 
     public Info GenerateMaze (Transform parent)
     {
@@ -56,6 +59,7 @@ public class Maze  {
     {
         // create a bottom plane
         GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        floor.layer = LayerMask.NameToLayer("Environment");
         floor.name = "Floor";
         floor.transform.SetParent(mazeHolder);
         floor.transform.localPosition = -new Vector3(cellWidth / 2f, -0.2f * cellWidth, cellWidth / 2f);
@@ -69,6 +73,7 @@ public class Maze  {
     {
         // create a top plane
         GameObject ceiling = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        ceiling.layer = LayerMask.NameToLayer("Environment");
         ceiling.name = "Ceiling";
         ceiling.transform.SetParent(mazeHolder);
         ceiling.transform.localPosition = -new Vector3(cellWidth / 2f, -cellWidth + 0.1f, cellWidth / 2f);
