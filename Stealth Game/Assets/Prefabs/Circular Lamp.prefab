@@ -278,9 +278,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightGroups:
   - lightGroup: {fileID: 4194423955808292}
-    intensity: 1.5
-    spotAngle: 134
-    rangeModifier: 11.2
-    lightColor: {r: 1, g: 0.9172414, b: 0.64705884, a: 1}
+    intensity: 2
+    spotAngle: 115
+    range: 5
+    lightColor: {r: 1, g: 0.9431035, b: 0.75735295, a: 1}
     shadowType: 1
     lightRenderer: {fileID: 23723992803921254}
+  flickering: 1
+  randomOnOff: 0
+  minTimeUntilNextFlicker: 0.05
+  maxTimeUntiNextFlicker: 2
+  minFlickerTime: 0.05
+  maxflickerTime: 0.23

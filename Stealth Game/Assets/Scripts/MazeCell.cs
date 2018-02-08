@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class MazeCell : MonoBehaviour
 {
-    // reference to the light controller
-    LightController lightController;
-    ReflectionProbe reflectionProbe;
+    const float scalingFactor = 4f;
 
-    Cell mazeCell;
-
-    [Header("Light Object")]
-    public Transform lampObject;
+    [Header("Light Object Prefab")]
+    public GameObject lampObjectPrefab;
+    public Transform parentOfLightObject;
 
     [Header("Reflection properties")]
     public bool boxProjection = true;
@@ -20,48 +17,74 @@ public class MazeCell : MonoBehaviour
     public UnityEngine.Rendering.ReflectionProbeRefreshMode refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.OnAwake;
  
     bool playerInRange = false;
-    bool lightActiveInCell = false;
+    bool lightInCell = false;
 
+    // reference to the light controller
+    LightController lightController;
+    ReflectionProbe reflectionProbe;
+
+    Cell mazeCell;
     Vector3 worldPosition;
-
     Transform player;
-    Vector3 directionToPlayer;
-
-    AudioSource flickering;
 
 
-    private void Start()
+    void Start()
     {
         player = GameManager.Singleton.Player;
+        if (player == null)
+            player = FindObjectOfType<PlayerController>().transform;
     }
 
-    public void SetupMazeCell(Cell mazeCell, bool lights)
+    public void SetupMazeCell(Cell mazeCell, bool lightInCell)
     {
         // set the cell position in the maze
         this.mazeCell = mazeCell;
         worldPosition = mazeCell.worldPosition;
         transform.position = worldPosition;
 
-        // setup the light 
-        lightActiveInCell = lights;
-        lightController = lampObject.GetComponent<LightController>();
-        lightController.gameObject.SetActive(lightActiveInCell);
-        if (lightActiveInCell)
-            lightController.SetupLights(this.mazeCell);  
+        this.lightInCell = lightInCell;
 
         // setup the reflection probe
+        SetupReflectionProbe();
+
+        // setup the light
+        if (this.lightInCell)
+            SetupLights();
+
+    }
+
+    void SetupLights ()
+    {
+        // instantiate light from prefab
+        GameObject lightObject = Instantiate(lampObjectPrefab, parentOfLightObject);
+
+        // position the light at the ceiling    
+        lightObject.transform.localScale = Vector3.one * mazeCell.cellWidth / scalingFactor;
+        lightObject.transform.position += Vector3.up * (mazeCell.cellWidth / 2f) * .8f;
+
+        // setup the light      
+        lightController = lightObject.GetComponent<LightController>();
+        lightController.SetupLights(mazeCell.cellWidth, false);      
+    }
+
+    void SetupReflectionProbe ()
+    {
+        // setup the reflection probe
         reflectionProbe = GetComponentInChildren<ReflectionProbe>();
-        reflectionProbe.size = Vector3.one * 2f * mazeCell.cellWidth;
-        reflectionProbe.boxProjection = boxProjection;
-        reflectionProbe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
-        reflectionProbe.refreshMode = refreshMode;
-        reflectionProbe.importance = 1;
-        reflectionProbe.intensity = reflectionIntensity;
+        if (reflectionProbe != null)
+        {
+            reflectionProbe.size = Vector3.one * 2f * mazeCell.cellWidth;
+            reflectionProbe.boxProjection = boxProjection;
+            reflectionProbe.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
+            reflectionProbe.refreshMode = refreshMode;
+            reflectionProbe.importance = 1;
+            reflectionProbe.intensity = reflectionIntensity;
+        }
     }
 
     void Update()
     {
-        if (player && lightActiveInCell)
+        if (player && lightInCell)
         {
             if (PlayerInRange())
             {
@@ -94,12 +117,6 @@ public class MazeCell : MonoBehaviour
         Ray ray2 = new Ray(rightFrontEdge, (player.position - rightFrontEdge).normalized);
         Ray ray3 = new Ray(leftBackEdge, (player.position - leftBackEdge).normalized);
         Ray ray4 = new Ray(rightBackEdge, (player.position - rightBackEdge).normalized);
-
-
-        Debug.DrawRay(ray1.origin, ray1.direction * Mathf.Infinity, Color.red);
-        Debug.DrawRay(ray2.origin, ray2.direction * Mathf.Infinity, Color.green);
-        Debug.DrawRay(ray3.origin, ray3.direction * Mathf.Infinity, Color.blue);
-        Debug.DrawRay(ray4.origin, ray4.direction * Mathf.Infinity, Color.yellow);
 
         RaycastHit hit1, hit2, hit3, hit4;
 

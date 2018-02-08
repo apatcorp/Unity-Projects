@@ -810,23 +810,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lightGroups:
   - lightGroup: {fileID: 4914532605085052}
-    intensity: 0.8
-    spotAngle: 90
-    rangeModifier: 10
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    intensity: 1
+    spotAngle: 100
+    range: 4.5
+    lightColor: {r: 1, g: 0.95598376, b: 0.77205884, a: 1}
     shadowType: 1
     lightRenderer: {fileID: 23349538381816642}
   - lightGroup: {fileID: 4755504167842462}
-    intensity: 0.8
-    spotAngle: 90
-    rangeModifier: 10
+    intensity: 1.5
+    spotAngle: 100
+    range: 10
     lightColor: {r: 1, g: 1, b: 1, a: 1}
     shadowType: 1
     lightRenderer: {fileID: 23644476358566882}
   - lightGroup: {fileID: 4515606938471252}
     intensity: 0.8
-    spotAngle: 90
-    rangeModifier: 10
-    lightColor: {r: 1, g: 1, b: 1, a: 1}
+    spotAngle: 78
+    range: 5.2
+    lightColor: {r: 1, g: 0.8285706, b: 0.6937176, a: 1}
     shadowType: 1
     lightRenderer: {fileID: 23508404595419470}
+  flickering: 1
+  randomOnOff: 1
+  minTimeUntilNextFlicker: 0.05
+  maxTimeUntiNextFlicker: 2
+  minFlickerTime: 0.05
+  maxflickerTime: 0.1

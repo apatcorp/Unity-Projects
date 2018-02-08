@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour {
     {
         GameObject lamp = Instantiate(lampPrefab, hand);
         LightController lightController = lamp.GetComponent<LightController>();
-        lightController.SetupLights(transform, 20f, true);
+        lightController.SetupLights(transform, 30f, true);
     }
 
     void Update ()

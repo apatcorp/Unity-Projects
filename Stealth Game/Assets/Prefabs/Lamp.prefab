@@ -279,8 +279,8 @@ MonoBehaviour:
   lightGroups:
   - lightGroup: {fileID: 4841572065734564}
     intensity: 2
-    spotAngle: 109
-    rangeModifier: 6.4
+    spotAngle: 99
+    range: 10
     lightColor: {r: 1, g: 1, b: 1, a: 0}
     shadowType: 1
     lightRenderer: {fileID: 23211227986058830}

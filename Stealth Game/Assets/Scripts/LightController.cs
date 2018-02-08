@@ -6,10 +6,6 @@ public class LightController : MonoBehaviour {
 
     public LightGroup[] lightGroups;
 
-    const float scalingFactor = 4f;
-
-    Cell cellInfo;
-
     bool lightIsOn = false;
 
     // flickering
@@ -26,6 +22,7 @@ public class LightController : MonoBehaviour {
     public float maxflickerTime = .1f;
 
     Transform player;
+    Vector3 directionToPlayer;
 
     private void Start()
     {
@@ -33,45 +30,35 @@ public class LightController : MonoBehaviour {
             player = FindObjectOfType<PlayerController>().transform;
     }
 
-    public void SetupLights(Transform player, float range, bool lightsOn)
+    public void SetupLights(Transform player, float range, bool lightIsOn)
     {
         // setup the lights for each light in each light group
         foreach (LightGroup lightGroup in lightGroups)
         {
             lightGroup.SetupLights(range);
-            lightGroup.EnableAllLights(lightsOn);
+            lightGroup.EnableAllLights(this.lightIsOn);
         }
 
         this.player = player;
 
-        ToggleLights();
+        if (lightIsOn)
+            ToggleLights();
     }
 
-    public void SetupLights (Cell cellInfo)
+    public void SetupLights(float range, bool lightIsOn)
     {
-        this.cellInfo = cellInfo;
-
-        // position the light component at the ceiling    
-        transform.localScale = Vector3.one * cellInfo.cellWidth / scalingFactor;
-        transform.position += Vector3.up * (cellInfo.cellWidth / 2f) * .8f;
-
-        // setup the lights for each light in each light group
-        foreach (LightGroup lightGroup in lightGroups)
-        {
-            lightGroup.SetupLights(this.cellInfo.cellWidth);
-            lightGroup.EnableAllLights(lightIsOn);
-        }
+        SetupLights(null, range, lightIsOn);
     }
 
     public void ToggleLights()
     {
         lightIsOn = !lightIsOn;
 
-        if (flickering)
-            PerformFlickering();
-
         foreach (LightGroup lightGroup in lightGroups)
         {
+            if (flickering)
+                PerformFlickering(lightGroup);
+
             lightGroup.EnableAllLights(lightIsOn);
         }
     }
@@ -79,7 +66,7 @@ public class LightController : MonoBehaviour {
     void AdjustVolume()
     {
         // find direction vector from light object to player
-        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        directionToPlayer = (player.position - transform.position).normalized;
 
         // cast a ray to that player and adjust the sound accordingly
         Ray ray = new Ray(transform.position, directionToPlayer);
@@ -97,14 +84,11 @@ public class LightController : MonoBehaviour {
         }
     }
 
-    void PerformFlickering ()
+    void PerformFlickering (LightGroup group)
     {
         if (lightIsOn)
         {
-            foreach (LightGroup group in lightGroups)
-            {
-                StartCoroutine("Flickering", group);
-            }
+            StartCoroutine("Flickering", group);
         }
         else
         {
@@ -155,7 +139,6 @@ public class LightController : MonoBehaviour {
                 group.EnableAllLights(true);       
             }
            
-
             yield return new WaitForSeconds(secondsUntilNextFlicker);
         }
     }
@@ -171,7 +154,7 @@ public class LightController : MonoBehaviour {
         [Range(10, 180)]
         public float spotAngle = 90f;
         [Range(0f, 20f)]
-        public float rangeModifier = 10f;
+        public float range = 10f;
         public Color lightColor = Color.white;
         public LightShadows shadowType = LightShadows.Hard;
 
@@ -210,7 +193,7 @@ public class LightController : MonoBehaviour {
             light.intensity = intensity;
             light.renderMode = LightRenderMode.ForcePixel;
             light.shadows = shadowType;
-            light.range = range + rangeModifier;
+            light.range = range + this.range;
         }
     }
 }
