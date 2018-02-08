@@ -1161,8 +1161,11 @@ MonoBehaviour:
     shadowType: 1
     lightRenderer: {fileID: 23772846572715658}
   flickering: 1
+  randomOnOff: 0
   minTimeUntilNextFlicker: 2
   maxTimeUntiNextFlicker: 10
+  minFlickerTime: 0.05
+  maxflickerTime: 0.1
 --- !u!114 &114280662872071390
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1212,8 +1215,11 @@ MonoBehaviour:
     shadowType: 1
     lightRenderer: {fileID: 23016026612388154}
   flickering: 1
+  randomOnOff: 1
   minTimeUntilNextFlicker: 0.05
   maxTimeUntiNextFlicker: 3
+  minFlickerTime: 0.05
+  maxflickerTime: 0.1
 --- !u!215 &215496666809114024
 ReflectionProbe:
   m_ObjectHideFlags: 1

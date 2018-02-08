@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
 
-    public Audio[] audios;
+    public List<Audio> audios;
+
+    static Dictionary<int, Audio> audioDictionary = new Dictionary<int, Audio>();
 
     static AudioManager singleton;
     public static AudioManager Singleton
@@ -19,31 +21,42 @@ public class AudioManager : MonoBehaviour {
     {
         if (singleton == null)
             singleton = this;
+
+        foreach (Audio audio in audios)
+        {
+            audioDictionary.Add(audio.name.GetHashCode(), audio);
+        }
     }
 
-
-    public static AudioSource InstantiateAudioSource(Vector3 audioSourcePosition, Audio audio, Transform parent)
+    public static AudioSource InstantiateAudioSource(Vector3 audioSourcePosition, string name, Transform parent)
     {
-        GameObject obj = new GameObject("AudioSource: " + parent.name);
+        GameObject obj = new GameObject("AudioSource: " + name);
         obj.transform.position = audioSourcePosition;
 
         if (parent != null)
             obj.transform.SetParent(parent);
 
         AudioSource source = obj.AddComponent<AudioSource>();
+        Audio audio;
 
-        source.clip = audio.clip;
-        source.pitch = audio.pitch;
-        source.playOnAwake = audio.playOnAwake;
-        source.volume = audio.volume;
-        source.loop = audio.loop;
+        if (audioDictionary.TryGetValue(name.GetHashCode(), out audio))
+        {
+            source.clip = audio.clip;
+            source.pitch = audio.pitch;
+            source.playOnAwake = audio.playOnAwake;
+            source.volume = audio.volume;
+            source.loop = audio.loop;
 
-        source.rolloffMode = AudioRolloffMode.Logarithmic;
-        source.minDistance = audio.minDistance;
-        source.maxDistance = audio.maxDistance;
+            source.rolloffMode = AudioRolloffMode.Logarithmic;
+            source.minDistance = audio.minDistance;
+            source.maxDistance = audio.maxDistance;
 
-        if (!source.isPlaying && source.playOnAwake)
-            source.Play();
+            if (!source.isPlaying && source.playOnAwake)
+                source.Play();
+        } else
+        {
+            Debug.LogWarning("Audio \"" + name + "\" not found. Maybe check spelling");
+        }
 
         return source;
     }
@@ -52,6 +65,8 @@ public class AudioManager : MonoBehaviour {
 [System.Serializable]
 public class Audio
 {
+    public string name;
+
     public AudioClip clip;
     [Range(0,1)]
     public float volume;

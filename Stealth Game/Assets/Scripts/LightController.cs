@@ -91,8 +91,8 @@ public class LightController : MonoBehaviour {
 
             foreach (LightGroup group in lightGroups)
             {
-                group.audioSource.volume = (hit.collider.tag == "Player") ? 1f / distance : (1f / distance) * 0.4f;
-                group.audioSource.volume = Mathf.Clamp01(group.audioSource.volume);
+                group.flickeringAudioSource.volume = (hit.collider.tag == "Player") ? 1f / distance : (1f / distance) * 0.4f;
+                group.flickeringAudioSource.volume = Mathf.Clamp01(group.flickeringAudioSource.volume);
             }
         }
     }
@@ -176,8 +176,7 @@ public class LightController : MonoBehaviour {
         public LightShadows shadowType = LightShadows.Hard;
 
         public MeshRenderer lightRenderer;
-
-        public AudioSource audioSource { get; private set; }
+        public AudioSource flickeringAudioSource { get; private set; }
 
         public void EnableAllLights (bool value)
         {
@@ -187,8 +186,8 @@ public class LightController : MonoBehaviour {
 
         public void PlayAudioForSeconds (float seconds)
         {
-            audioSource.Play();
-            audioSource.SetScheduledEndTime(AudioSettings.dspTime + seconds);
+            flickeringAudioSource.Play();
+            flickeringAudioSource.SetScheduledEndTime(AudioSettings.dspTime + seconds);
         }
 
         public void SetupLights (float range)
@@ -200,7 +199,7 @@ public class LightController : MonoBehaviour {
                 lights.Add(light);
             }
 
-            audioSource = AudioManager.InstantiateAudioSource(lightGroup.position, AudioManager.Singleton.audios[1], lightGroup);
+            flickeringAudioSource = AudioManager.InstantiateAudioSource(lightGroup.position, "Flickering", lightGroup);
         }
 
         void SetupLight(Light light, float range)

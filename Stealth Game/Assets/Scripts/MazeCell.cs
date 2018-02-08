@@ -7,7 +7,6 @@ public class MazeCell : MonoBehaviour
     // reference to the light controller
     LightController lightController;
     ReflectionProbe reflectionProbe;
-    Material lightMaterial;
 
     Cell mazeCell;
 
@@ -19,11 +18,10 @@ public class MazeCell : MonoBehaviour
     [Range(0.01f, 5f)]
     public float reflectionIntensity = 1;
     public UnityEngine.Rendering.ReflectionProbeRefreshMode refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.OnAwake;
-
-    
+ 
     bool playerInRange = false;
     bool lightActiveInCell = false;
-    Color emissionColor;
+
     Vector3 worldPosition;
 
     Transform player;
@@ -31,9 +29,10 @@ public class MazeCell : MonoBehaviour
 
     AudioSource flickering;
 
+
     private void Start()
     {
-        player = FindObjectOfType<PlayerController>().transform;
+        player = GameManager.Singleton.Player;
     }
 
     public void SetupMazeCell(Cell mazeCell, bool lights)

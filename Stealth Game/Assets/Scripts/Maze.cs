@@ -8,9 +8,9 @@ public class Maze  {
     public GameObject mazeCellPrefab;
 
     [Range(1, 50)]
-    public int width, height;
+    public int width = 10, height = 10;
     [Range(1, 10)]
-    public int cellWidth = 1;
+    public int cellWidth = 5;
 
     public MazeGenerator.Algorithm algorithm;
 

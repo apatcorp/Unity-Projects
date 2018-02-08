@@ -4,14 +4,40 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject playerPrefab;
+    Transform player;
+    public Transform Player
+    {
+        get
+        {
+            if (player == null)
+                player = FindObjectOfType<PlayerController>().transform;
 
-    public Maze[] mazes;
-    int index = 0;
+            return player;
+        }
+    }
 
-    List<Maze.Info> mazeObjects = new List<Maze.Info>();
+    LevelLoader levelLoader;
+    public LevelLoader LevelLoader
+    {
+        get
+        {
+            if (levelLoader == null)
+                levelLoader = FindObjectOfType<LevelLoader>();
+            return levelLoader;
+        }
+    }
 
-    Maze.Info currentMaze;
+    Spawner spawner;
+    public Spawner Spawner
+    {
+        get
+        {
+            if (spawner == null)
+                spawner = FindObjectOfType<Spawner>();
+
+            return spawner;
+        }
+    }
    
     private static GameManager singleton = null;
     public static GameManager Singleton
@@ -29,36 +55,9 @@ public class GameManager : MonoBehaviour
     }
 
     void Start ()
-    {
-        // generate all the mazes
-        foreach (Maze maze in mazes)
-        {
-            mazeObjects.Add(maze.GenerateMaze(transform));
-        }
-
-        // set the first one visible
-        currentMaze = mazeObjects[index];
-        currentMaze.mazeObject.SetActive(true);
-
-        // instantiate player
-        InstantiatePlayer();
-	}
-
-    void InstantiatePlayer ()
-    {
-        // spawn the player at a corner cell of th maze
-        Vector3[] possiblePositions = new Vector3[4];
-
-        possiblePositions[0] = currentMaze.cells[0, 0].worldPosition;   // bottom left corner
-        possiblePositions[1] = currentMaze.cells[0, currentMaze.height - 1].worldPosition;  // top left corner
-        possiblePositions[2] = currentMaze.cells[currentMaze.width - 1, 0].worldPosition;  // top right corner
-        possiblePositions[3] = currentMaze.cells[currentMaze.width - 1, currentMaze.height - 1].worldPosition;  // bottom right corner
-
-        Vector3 spawnPosition = possiblePositions[Random.Range(0, possiblePositions.Length)];
-
-        // create the player at position
-        GameObject playerGO = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
-
-        AudioManager.InstantiateAudioSource(playerGO.transform.position, AudioManager.Singleton.audios[0], playerGO.transform);
+    {      
+        levelLoader = FindObjectOfType<LevelLoader>();
+        spawner = FindObjectOfType<Spawner>();
+        player = FindObjectOfType<PlayerController>().transform;
     }
 }

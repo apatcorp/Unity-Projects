@@ -1,18 +1,21 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour {
 
+    [Header("Transform of the camera")]
     public Transform cameraTransform;
     Vector3 cameraInitialPosition;
 
-    public GameObject lampPrefab;
+    [Header("Transform of the hand")]
     public Transform hand;
 
+    public GameObject lampPrefab;
+
+    [Header("Movemnet/Rotation speed")]
     // movement
-    public float speed = 5f;
+    public float movementSpeed = 5f;
     Vector3 targetVelocity;
     Vector3 velocity;
     Vector3 currentVelocitySmoothDamp;
@@ -42,8 +45,12 @@ public class PlayerController : MonoBehaviour {
     float speedMultiplier = 1.9f;
     float normalizedFootStep = 3f;
 
+    GameManager gameManager;
+
     private void Start()
     {
+        gameManager = GameManager.Singleton;
+
         if (cameraTransform == null)
         {
             Debug.LogError("No Camera attached");
@@ -54,7 +61,7 @@ public class PlayerController : MonoBehaviour {
         playerRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
         cameraInitialPosition = cameraTransform.localPosition;
 
-        footSteps = AudioManager.InstantiateAudioSource(transform.position, AudioManager.Singleton.audios[2], transform);
+        footSteps = AudioManager.InstantiateAudioSource(transform.position, "Foot Steps", transform);
 
         CreateLamp();
     }
@@ -75,14 +82,14 @@ public class PlayerController : MonoBehaviour {
         {
             if (!running)
             {
-                speed *= speedMultiplier;
+                movementSpeed *= speedMultiplier;
                 running = true;
             }          
         } else
         {
             if (running)
             {
-                speed /= speedMultiplier;
+                movementSpeed /= speedMultiplier;
                 running = false;
             }
         }
@@ -107,21 +114,20 @@ public class PlayerController : MonoBehaviour {
         }
 
         // caluclate velocity
-        targetVelocity = inputDirection * speed;
+        targetVelocity = inputDirection * movementSpeed;
         velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref currentVelocitySmoothDamp, velocitySmoothTime);
 
         // calculate camera movement
         Vector2 angles = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
 
-        // rotate camera vertically
+        // rotate camera and hand vertically
         targetYRotationAngle -= angles.y * rotationSpeedY;
         targetYRotationAngle = Mathf.Clamp(targetYRotationAngle, minRotationDown, maxRotationUp);
-
         yRotationAngle = Mathf.SmoothDampAngle(yRotationAngle, targetYRotationAngle, ref currentVelocityAngleSmoothDampY, rotationSmoothTimeY);
 
         cameraTransform.localEulerAngles = new Vector3(yRotationAngle, 0f, 0f);
 
-        // rotate player horizontally
+        // rotate player on own y axis
         targetXRotationAngle += angles.x * rotationSpeedX;
         xRotationAngle = Mathf.SmoothDampAngle(xRotationAngle, targetXRotationAngle, ref currentVelocityAngleSmoothDampX, rotationSmoothTimeX);
 
@@ -134,13 +140,14 @@ public class PlayerController : MonoBehaviour {
         playerRigidBody.MovePosition(playerRigidBody.position + transform.TransformDirection(velocity) * Time.fixedDeltaTime);
     }
 
+    
     IEnumerator FootStep ()
     {
         while (moving)
         {
             footSteps.Play();
 
-            yield return new WaitForSeconds(normalizedFootStep / speed);
+            yield return new WaitForSeconds(normalizedFootStep / movementSpeed);
         }
     }
 
@@ -148,9 +155,8 @@ public class PlayerController : MonoBehaviour {
     {
         while (!moving)
         {
-            Vector3 targetPosition = cameraTransform.position + new Vector3(0f, .2f * Mathf.Sin(2f * Time.time), 0f);
-
-            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, Time.deltaTime);
+            Vector3 targetPosition = cameraTransform.position + new Vector3(0f, .1f * Mathf.Sin(Time.time), 0f);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, targetPosition, 2 * Time.deltaTime);
 
             yield return null;
         }
