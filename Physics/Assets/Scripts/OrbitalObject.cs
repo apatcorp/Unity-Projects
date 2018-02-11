@@ -16,7 +16,7 @@ public class OrbitalObject : MonoBehaviour
         orbitalObjectInfo = new OrbitalObjectInfo(GetComponent<Rigidbody>(), planetaryObject);
         orbitalObjects.Add(orbitalObjectInfo);
 
-        orbitalSpeed = planetaryObject.orbitalSpeed;
+        orbitalSpeed = planetaryObject.orbitalSpeed_approximate;
 
         orbitalObjectInfo.rb.position = Vector3.right * orbitalObjectInfo.planetaryObject.radiusToCentre;
 
@@ -43,7 +43,10 @@ public class OrbitalObject : MonoBehaviour
     void Move ()
     {
         if (orbitalSpeed > 0)
+        {
+            orbitalSpeed = orbitalObjectInfo.planetaryObject.CalculateOrbitalSpeed_Precise(orbitalObjectInfo.rb.position);
             orbitalObjectInfo.rb.MovePosition(orbitalObjectInfo.rb.position + Vector3.forward * orbitalSpeed * Time.fixedDeltaTime);
+        }
     }
 
     void FixedUpdate()
@@ -69,7 +72,7 @@ public class OrbitalObject : MonoBehaviour
             this.rb.useGravity = false;
             this.rb.drag = 0f;
             this.rb.angularDrag = 0f;
-            this.rb.mass = planetaryObject.mass;
+            this.rb.mass = planetaryObject.m;
         }
     }
 }

@@ -235,14 +235,52 @@ GameObject:
   - component: {fileID: 296185541}
   - component: {fileID: 296185540}
   - component: {fileID: 296185539}
+  - component: {fileID: 296185542}
   m_Layer: 0
-  m_Name: Ellipse
+  m_Name: Ellipse Drawer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!120 &296185539
+  m_IsActive: 0
+--- !u!114 &296185539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 296185538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03a6c63276235e64f8f124734c9c4eaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+  lineColour: {r: 0.44917822, g: 0.9852941, b: 0.49724376, a: 1}
+  widthCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0.21874619
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0.21874619
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  widthMultiplier: 1
+  segments: 100
+  ellipse:
+    minRadius: 5
+    maxRadius: 30
+    gravitationalParameter: 200
+--- !u!120 &296185540
 LineRenderer:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -256,7 +294,7 @@ LineRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_Materials:
-  - {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -285,13 +323,13 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: 0.19298172
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
-      m_RotationOrder: 0
+      m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 1}
@@ -327,24 +365,7 @@ LineRenderer:
     textureMode: 0
     generateLightingData: 0
   m_UseWorldSpace: 1
-  m_Loop: 1
---- !u!114 &296185540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 296185538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f3ad2fca3253a941872498c69dd9100, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minRadius: 8
-  maxRadius: 82
-  constant: 45.6
-  toggle: 1
-  orbitObjectPrefab: {fileID: 4736557199621546, guid: 764ba0196e57e174c8136e00c1b64665,
-    type: 2}
+  m_Loop: 0
 --- !u!4 &296185541
 Transform:
   m_ObjectHideFlags: 0
@@ -358,6 +379,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &296185542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 296185538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b9196b229dcbb449cee703a23ae53c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitObjectPrefab: {fileID: 4736557199621546, guid: 764ba0196e57e174c8136e00c1b64665,
+    type: 2}
+  ellipse:
+    minRadius: 5
+    maxRadius: 30
+    gravitationalParameter: 400
 --- !u!1 &305144936
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +411,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &305144937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,6 +425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   massMultiplier: 1
   radiusMultiplier: 30
+  orbitalPeriodMultiplier: 1
 --- !u!4 &305144938
 Transform:
   m_ObjectHideFlags: 0

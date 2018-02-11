@@ -10,6 +10,8 @@ public class SolarSystem : MonoBehaviour
     public float massMultiplier = 1f;
     [Range(1, 100)]
     public float radiusMultiplier = 1f;
+    [Range(1, 100)]
+    public float orbitalPeriodMultiplier = 1f;
 
     PlanetaryObject[] planetaryObjects;
    
@@ -26,19 +28,9 @@ public class SolarSystem : MonoBehaviour
 
         planetaryObjects = new PlanetaryObject[planetaryObjectsCount];
 
-        // set the sum as first element
-        planetaryObjects[0] = new PlanetaryObject((float)(PlanetaryObjectData.masses[0] / massOfEarth) * massMultiplier, (float)(PlanetaryObjectData.radiiToCentre[0] / radiusSunEarth) * radiusMultiplier);
-        SetupPlanetaryObject(0, planetaryObjects[0]);
-
-        // variable with stores the combined masses until the ith object
-        float combinedMass = 0f;
-
-        for (int i = 1; i < planetaryObjectsCount; i++)
+        for (int i = 0; i < planetaryObjectsCount; i++)
         {
-            combinedMass += planetaryObjects[i - 1].mass;
-
-            PlanetaryObject planetaryobject = new PlanetaryObject((float)(PlanetaryObjectData.masses[i] / massOfEarth) * massMultiplier, (float)(PlanetaryObjectData.radiiToCentre[i] / radiusSunEarth) * radiusMultiplier);
-            planetaryobject.CalculateOrbitalSpeed(combinedMass);
+            PlanetaryObject planetaryobject = new PlanetaryObject(i, massMultiplier, radiusMultiplier, orbitalPeriodMultiplier);
             planetaryObjects[i] = planetaryobject;
 
             // instantiate planetary object
