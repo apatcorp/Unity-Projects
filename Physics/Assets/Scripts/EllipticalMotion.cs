@@ -10,7 +10,7 @@ public class EllipticalMotion : MonoBehaviour
 
     Transform orbitalObject;
 
-    void OnValidate()
+    /*void OnValidate()
     {
         if (ellipse != null)
         {
@@ -34,5 +34,5 @@ public class EllipticalMotion : MonoBehaviour
     void Update()
     {
         ellipse.CalculateOrbitalPositionXY(orbitalObject);
-    }
+    }*/
 }

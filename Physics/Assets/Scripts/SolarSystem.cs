@@ -23,9 +23,6 @@ public class SolarSystem : MonoBehaviour
 	
     void SetupSolarSystem ()
     {
-        double massOfEarth = PlanetaryObjectData.masses[(int)Name.EARTH];
-        double radiusSunEarth = PlanetaryObjectData.radiiToCentre[(int)Name.EARTH];
-
         planetaryObjects = new PlanetaryObject[planetaryObjectsCount];
 
         for (int i = 0; i < planetaryObjectsCount; i++)

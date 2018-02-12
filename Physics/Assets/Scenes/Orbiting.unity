@@ -242,7 +242,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &296185539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,32 +254,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03a6c63276235e64f8f124734c9c4eaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
-  lineColour: {r: 0.44917822, g: 0.9852941, b: 0.49724376, a: 1}
-  widthCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 2
-      time: 0
-      value: 0.21874619
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - serializedVersion: 2
-      time: 1
-      value: 0.21874619
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  widthMultiplier: 1
-  segments: 100
-  ellipse:
-    minRadius: 5
-    maxRadius: 30
-    gravitationalParameter: 200
+  ellipses:
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.041582115, g: 1, b: 0.007352948, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.20000076
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.20000076
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 1.2499999
+      maxRadius: 5
+      semi_major_axis: 3.125
+      semi_minor_axis: 2.5
+      eccentricity: 0.6
+      semi_latus_rectum: 2
 --- !u!120 &296185540
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -395,7 +399,10 @@ MonoBehaviour:
   ellipse:
     minRadius: 5
     maxRadius: 30
-    gravitationalParameter: 400
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
 --- !u!1 &305144936
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +418,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &305144937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,7 +431,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   massMultiplier: 1
-  radiusMultiplier: 30
+  radiusMultiplier: 50
   orbitalPeriodMultiplier: 1
 --- !u!4 &305144938
 Transform:
@@ -732,7 +739,7 @@ Transform:
   m_GameObject: {fileID: 577535317}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 305144938}
   m_RootOrder: 6
@@ -778,7 +785,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.30330884, g: 0.47702205, b: 0.75, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -790,7 +797,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 52.49
-  m_Depth: -1
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -925,7 +932,7 @@ Transform:
   m_GameObject: {fileID: 806773165}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_Children: []
   m_Father: {fileID: 305144938}
   m_RootOrder: 8
@@ -1011,7 +1018,7 @@ Transform:
   m_GameObject: {fileID: 1155798366}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 305144938}
   m_RootOrder: 3
@@ -1149,7 +1156,7 @@ Transform:
   m_GameObject: {fileID: 1192074798}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 305144938}
   m_RootOrder: 7
@@ -1373,7 +1380,7 @@ Transform:
   m_GameObject: {fileID: 2100180327}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
   m_Father: {fileID: 305144938}
   m_RootOrder: 4

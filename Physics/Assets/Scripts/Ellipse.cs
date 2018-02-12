@@ -1,101 +1,70 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class Ellipse
 {
-    [Header("Min Radius From Centre (Perihelion)")]
     public float minRadius = 1f;
-    [Header("Max Radius From Centre (Aphelion)")]
     public float maxRadius = 5f;
-    [Header("Gravitational Parameter (G * M)")]
-    public float gravitationalParameter = 1f;
 
-    float semi_major_axis;
-    float semi_minor_axis;
-    float semi_latus_rectum;
-    float eccentricity;
-    public float orbitalPeriod { get; private set; }
+    public float semi_major_axis;
+    public float semi_minor_axis;
 
-    Vector2 position = Vector2.zero;
-    float angularVelocity = 0f;
-    float radius = 0f;
+    [Range(0f, 1f)]
+    public float eccentricity;
 
-    float angularVelocityConstant = 0f;
+    [HideInInspector]
+    public float semi_latus_rectum;
 
-    public Ellipse(float minRadius, float maxRadius, float gravitationalParameter)
-    {
-        this.minRadius = minRadius;
-        this.maxRadius = maxRadius;
-        this.gravitationalParameter = gravitationalParameter;
-
-        semi_major_axis = CalculateSemiMajorAxis();
-        semi_minor_axis = CalculateSemiMinorAxis();
-        eccentricity = CalculateEccentricity();
-        semi_latus_rectum = CalculateSemiLatusRectum();
-        radius = CalculateRadius(0f);
-        orbitalPeriod = CalculateOrbitalPeriod();
-
-        angularVelocityConstant = (2f * Mathf.PI * semi_major_axis * semi_minor_axis);
-    }
-
-    float CalculateSemiMajorAxis ()
-    {
-        return (minRadius + maxRadius) / 2f;
-    }
-
-    float CalculateSemiMinorAxis()
-    {
-        return Mathf.Sqrt((minRadius * maxRadius));
-    }
-
-    float CalculateEccentricity()
-    {
-        return Mathf.Sqrt(1 - ((semi_minor_axis * semi_minor_axis) / (semi_major_axis * semi_major_axis)));
-    }
-
-    float CalculateSemiLatusRectum()
-    {
-        return (semi_minor_axis * semi_minor_axis) / semi_major_axis;
-    }
-
-    float CalculateRadius(float angleInRadians)
+    protected float CalculateRadiusAtAngle(float angleInRadians)
     {
         return semi_latus_rectum / (1 + eccentricity * Mathf.Cos(angleInRadians));
     }
 
-    float CalculateOrbitalPeriod ()
+    public Vector2 EvaluateAngle(float angleInRadians)
     {
-        return 2f * Mathf.PI * Mathf.Sqrt(Mathf.Pow(semi_major_axis, 3) / gravitationalParameter);
+        float currentRadius = CalculateRadiusAtAngle(angleInRadians);
+        return new Vector3(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)) * currentRadius;
+    }
+}
+
+public class EllipticOrbit : Ellipse
+{
+    float orbitalPeriod;
+    float gravitationalParamter;
+
+    float angularVelocity = 0f;
+    float currentRadius = 0f;
+  
+
+    float CalculateAngularVelocity()
+    {
+        return (2f * Mathf.PI * semi_major_axis * semi_minor_axis) / (orbitalPeriod * (currentRadius * currentRadius));
     }
 
-    float CalculateAngularVelocity ()
+    Vector2 EvaluatePositionAtAngle(float angleInRadians)
     {
-        return angularVelocityConstant / (orbitalPeriod * (radius * radius));
+        currentRadius = CalculateRadiusAtAngle(angleInRadians);
+        return new Vector3(Mathf.Cos(angleInRadians), Mathf.Sin(angleInRadians)) * currentRadius;
     }
 
-    public Vector2 Evaluate(float t)
+    public Vector2 CalculateOrbitalPosition()
     {
-        radius = CalculateRadius(t);
-        return new Vector3(Mathf.Cos(t), Mathf.Sin(t)) * radius;
+        // calculate velocity
+        angularVelocity += CalculateAngularVelocity() * Time.deltaTime;
+        Vector2 position = EvaluatePositionAtAngle(angularVelocity);
+
+        return position;
     }
 
-    public void CalculateOrbitalPositionXY(Transform orbitalObject)
+
+    /*public void CalculateOrbitalPositionXZ(Transform orbitalObject)
     {
         // calculate velocity
         //angularVelocity += (2f * Mathf.PI * semi_major_axis * semi_minor_axis) / (orbitalPeriod * (radius * radius)) * Time.deltaTime;
         angularVelocity += CalculateAngularVelocity() * Time.deltaTime;
-        position = Evaluate(angularVelocity);
-
-        orbitalObject.localPosition = new Vector3(position.x, position.y, 0f);
-    }
-
-    public void CalculateOrbitalPositionXZ(Transform orbitalObject)
-    {
-        // calculate velocity
-        //angularVelocity += (2f * Mathf.PI * semi_major_axis * semi_minor_axis) / (orbitalPeriod * (radius * radius)) * Time.deltaTime;
-        angularVelocity += CalculateAngularVelocity() * Time.deltaTime;
-        position = Evaluate(angularVelocity);
+        position = EvaluatePositionAtAngle(angularVelocity);
 
         orbitalObject.localPosition = new Vector3(position.x, 0f, position.y);
-    }
+    }*/
 }

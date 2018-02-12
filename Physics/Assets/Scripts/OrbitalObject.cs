@@ -44,7 +44,7 @@ public class OrbitalObject : MonoBehaviour
     {
         if (orbitalSpeed > 0)
         {
-            orbitalSpeed = orbitalObjectInfo.planetaryObject.CalculateOrbitalSpeed_Precise(orbitalObjectInfo.rb.position);
+            //orbitalSpeed = orbitalObjectInfo.planetaryObject.CalculateOrbitalSpeed_Precise(orbitalObjectInfo.rb.position);
             orbitalObjectInfo.rb.MovePosition(orbitalObjectInfo.rb.position + Vector3.forward * orbitalSpeed * Time.fixedDeltaTime);
         }
     }
@@ -72,6 +72,7 @@ public class OrbitalObject : MonoBehaviour
             this.rb.useGravity = false;
             this.rb.drag = 0f;
             this.rb.angularDrag = 0f;
+            this.rb.constraints = RigidbodyConstraints.FreezeRotation;
             this.rb.mass = planetaryObject.m;
         }
     }
