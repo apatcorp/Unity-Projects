@@ -6,33 +6,25 @@ public class EllipticalMotion : MonoBehaviour
     public Transform orbitObjectPrefab;
 
     [Header("Ellipse")]
-    public Ellipse ellipse;
+    public EllipticOrbit ellipse;
 
     Transform orbitalObject;
 
-    /*void OnValidate()
-    {
-        if (ellipse != null)
-        {
-            ellipse.minRadius = ellipse.minRadius < 0 ? 0 : ellipse.minRadius;
-            ellipse.maxRadius = ellipse.maxRadius < 0 ? 0 : ellipse.maxRadius;
-
-            ellipse.minRadius = ellipse.minRadius > ellipse.maxRadius ? ellipse.maxRadius : ellipse.minRadius;
-            ellipse.maxRadius = ellipse.maxRadius < ellipse.minRadius ? ellipse.minRadius : ellipse.maxRadius;
-
-            ellipse.gravitationalParameter = ellipse.gravitationalParameter < 0 ? Mathf.Epsilon : ellipse.gravitationalParameter;
-        }
-    }
 
     void Start ()
     {
         orbitalObject = orbitObjectPrefab != null ? Instantiate(orbitObjectPrefab) : GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
-        ellipse = new Ellipse(ellipse.minRadius, ellipse.maxRadius, ellipse.gravitationalParameter);
-        print("Orbital Period: " + ellipse.orbitalPeriod + " sec");
+        orbitalObject.SetParent(transform);
+
+        ellipse.orbitalPeriod = EllipseCalculation.Orbiting.CalculateOrbitalPeriod(ellipse.semi_major_axis, SolarSystem.G, 5, 10);
+        ellipse.semi_minor_axis = EllipseCalculation.Semi_Minor_Axis_2(ellipse.semi_major_axis, ellipse.eccentricity);
+        ellipse.semi_latus_rectum = EllipseCalculation.Semi_Latus_Rectum(ellipse.semi_major_axis, ellipse.semi_minor_axis);
+        ellipse.currentRadius = ellipse.CalculateRadiusAtAngle(0f);
 	}
 
     void Update()
     {
-        ellipse.CalculateOrbitalPositionXY(orbitalObject);
-    }*/
+        Vector2 position = ellipse.CalculateOrbitalPosition();
+        orbitalObject.localPosition = new Vector3(position.x, position.y, 0f);
+    }
 }

@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class EllipseDrawer : MonoBehaviour
 {
+    [SerializeField]
     public List<EllipseConfiguration> ellipses;
 
     void Start ()
@@ -25,16 +27,22 @@ public class EllipseDrawer : MonoBehaviour
     public class EllipseConfiguration
     {
         [Header("Line Renderer Configs")]
+        [SerializeField]
         public Material lineMaterial;
+        [SerializeField]
         public Color lineColour = Color.white;
+        [SerializeField]
         public AnimationCurve widthCurve;
+        [SerializeField]
         public float widthMultiplier = 1f;
 
         [Header("Line Segments")]
         [Range(10, 500)]
+        [SerializeField]
         public int segments = 100;
 
         [Header("Ellipse")]
+        [SerializeField]
         public Ellipse ellipse;
 
         public void DrawEllipse (LineRenderer ellipseRenderer, Transform parent)
@@ -44,13 +52,7 @@ public class EllipseDrawer : MonoBehaviour
             ellipseRenderer.widthCurve = widthCurve;
             ellipseRenderer.widthMultiplier = widthMultiplier;
             ellipseRenderer.loop = true;
-
-            print(ellipse.minRadius);
-            print(ellipse.maxRadius);
-            print(ellipse.semi_major_axis);
-            print(ellipse.semi_minor_axis);
-            print(ellipse.eccentricity);
-            print(ellipse.semi_latus_rectum);
+            ellipseRenderer.useWorldSpace = false;
 
             Vector3[] points = new Vector3[segments];
 
@@ -63,7 +65,7 @@ public class EllipseDrawer : MonoBehaviour
 
             GameObject focalPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             focalPoint.transform.SetParent(parent);
-            focalPoint.transform.localScale = Vector3.one * 0.8f;
+            focalPoint.transform.localScale = Vector3.one * 0.1f * ellipse.semi_minor_axis;
             focalPoint.transform.position = Vector3.zero;
 
             ellipseRenderer.positionCount = segments;

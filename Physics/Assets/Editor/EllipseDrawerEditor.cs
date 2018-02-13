@@ -3,41 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+[System.Serializable]
 [CustomEditor(typeof(EllipseDrawer)), CanEditMultipleObjects]
 public class EllipseDrawerEditor : Editor
 {
+    [SerializeField]
     SerializedProperty ellipsesList;
 
-    List<EllipseData> ellipseDataList;
+    //Dictionary<int, EllipseConfigData> ellipseConfigDataDictionary = new Dictionary<int, EllipseConfigData>();
+    [SerializeField]
+    List<EllipseConfigData> ellipseConfigList = new List<EllipseConfigData>();
+
 
     void OnEnable()
     {
         ellipsesList = serializedObject.FindProperty("ellipses");
-        ellipseDataList = new List<EllipseData>();
-
-        for (int i = 0; i < ellipsesList.arraySize; i++)
-        {
-            ellipseDataList.Add(new EllipseData(0f, 0f, 0f, 0f, 0f));
-        }
+        //Debug.Log("START");
     }
-
 
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
-
         EditorGUILayout.BeginVertical(new GUIStyle());
         EditorGUILayout.PropertyField(ellipsesList, new GUIContent("List of Ellipses"));
 
         if (ellipsesList.isExpanded)
-            EditorGUILayout.PropertyField(ellipsesList.FindPropertyRelative("Array.size"), new GUIContent("Count", "Amount of ellipses to be drawn"));
+        {
+            EditorGUILayout.PropertyField(ellipsesList.FindPropertyRelative("Array.size"), new GUIContent("Count", "Amount of ellipses to be drawn"));   
+        }
 
         EditorGUI.indentLevel += 1;
         for (int i = 0; i < ellipsesList.arraySize; i++)
-        {       
+        {      
             if (ellipsesList.isExpanded)
             {
-                DrawEllipseConfiguration(i);
+                SerializedProperty ellipseConfig = ellipsesList.GetArrayElementAtIndex(i);
+                DrawEllipseConfiguration(i, ellipseConfig);
 
                 EditorGUILayout.Space();
                 EditorGUILayout.Space();
@@ -47,12 +47,15 @@ public class EllipseDrawerEditor : Editor
 
         EditorGUILayout.EndVertical();
 
+        serializedObject.Update();
+
         serializedObject.ApplyModifiedProperties();
     }
 
-    void DrawEllipseConfiguration (int index)
+    void DrawEllipseConfiguration(int index, SerializedProperty ellipseConfig)
     {
-        SerializedProperty ellipseConfig = ellipsesList.GetArrayElementAtIndex(index);
+        EllipseConfigData ellipseConfigData;
+
         SerializedProperty lineMaterial = ellipseConfig.FindPropertyRelative("lineMaterial");
         SerializedProperty lineColour = ellipseConfig.FindPropertyRelative("lineColour");
         SerializedProperty widthCurve = ellipseConfig.FindPropertyRelative("widthCurve");
@@ -67,12 +70,36 @@ public class EllipseDrawerEditor : Editor
         SerializedProperty eccentricity = ellipse.FindPropertyRelative("eccentricity");
         SerializedProperty semi_latus_rectum = ellipse.FindPropertyRelative("semi_latus_rectum");
 
-        EllipseData ellipseData = new EllipseData(ellipseDataList[index].minRadius, ellipseDataList[index].maxRadius, ellipseDataList[index].semi_major_axis, ellipseDataList[index].semi_minor_axis, ellipseDataList[index].eccentricity);
-        ellipseData.Update(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity);
 
-        //Debug.Log(ellipseData.ToString());
+        /*if (!ellipseConfigDataDictionary.TryGetValue(ellipseConfig.displayName.GetHashCode(), out ellipseConfigData))
+        {
+            ellipseConfigData = new EllipseConfigData(ellipseConfig);
+            ellipseConfigDataDictionary.Add(ellipseConfig.displayName.GetHashCode(), ellipseConfigData);
+            Debug.Log(ellipseConfig.displayName);
+        }*/
+        //ellipseConfigData = ellipseConfigList[index];
+        if (EllipseData.ellipseConfigList.Count > 0)
+        {
+            ellipseConfigData = EllipseData.ellipseConfigList[index];
+        } else
+        {
+            Debug.Log(ellipseConfig.displayName);
+            ellipseConfigData = new EllipseConfigData(ellipseConfig);
+            EllipseData.ellipseConfigList.Add(ellipseConfigData);
+        }
 
-        EditorGUILayout.PropertyField(ellipseConfig, new GUIContent("Ellipse " + (index + 1)));
+        lineColour.colorValue = ellipseConfigData.lineColour;
+        widthCurve.animationCurveValue = ellipseConfigData.widthCurve;
+        widthMultiplier.floatValue = ellipseConfigData.widthMultiplier;
+        segments.intValue = ellipseConfigData.segments;
+
+        float currentMinRadius = ellipseConfigData.minRadius;
+        float currentMaxRadius = ellipseConfigData.maxRadius;
+        float currentSMA = ellipseConfigData.semi_major_axis;
+        float currentSMI = ellipseConfigData.semi_minor_axis;
+        float currentEccentricity = ellipseConfigData.eccentricity;
+
+        EditorGUILayout.PropertyField(ellipseConfig, new GUIContent(ellipseConfig.displayName));
 
         if (ellipseConfig.isExpanded)
         {
@@ -85,190 +112,275 @@ public class EllipseDrawerEditor : Editor
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Ellipse", EditorStyles.boldLabel);
 
-            EditorGUI.indentLevel += 1;
-       
             EditorGUILayout.HelpBox("Set two parameters > 0 to define the ellipse", MessageType.Info, true);
-
-            if (!ellipseData.minRadiusHidden)
+           
+            /********** Min Radius *******/
+            EditorGUI.BeginDisabledGroup(ellipseConfigData.minRadiusHidden);
+            EditorGUI.BeginChangeCheck();
+            currentMinRadius = EditorGUILayout.FloatField(new GUIContent("Min Radius", "Minimum Radius From Focus Point (Perihelion)"), currentMinRadius);
+            //EditorGUILayout.PropertyField(minRadius, new GUIContent("Min Radius", "Minimum Radius From Focus Point (Perihelion)"));
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                EditorGUILayout.PropertyField(minRadius, new GUIContent("Min Radius", "Minimum Radius From Focus Point (Perihelion)"));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    ellipseData.minRadius = minRadius.floatValue;
-                    ellipseData.semi_major_axis_hidden = ellipseData.semi_minor_axis_hidden = ellipseData.minRadius > 0f;
-
-                    ellipseData.maxRadiusHidden = ellipseData.minRadius > 0f && ellipseData.eccentricity > 0f;
-                    ellipseData.eccentricityHidden = ellipseData.minRadius > 0f && ellipseData.maxRadius > 0f;
-                }
+                ellipseConfigData.minRadius = currentMinRadius;
             }
+            EditorGUI.EndDisabledGroup();
+            /***************************/
 
-            if (!ellipseData.maxRadiusHidden)
+            /********** Max Radius *******/
+            EditorGUI.BeginDisabledGroup(ellipseConfigData.maxRadiusHidden);
+            EditorGUI.BeginChangeCheck();
+            currentMaxRadius = EditorGUILayout.FloatField(new GUIContent("Max Radius", "Maximum Radius From Focus Point (Aphelion)"), currentMaxRadius);
+            //EditorGUILayout.PropertyField(maxRadius, new GUIContent("Max Radius", "Maximum Radius From Focus Point (Aphelion)"));
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                EditorGUILayout.PropertyField(maxRadius, new GUIContent("Max Radius", "Maximum Radius From Focus Point (Aphelion)"));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    ellipseData.maxRadius = maxRadius.floatValue;
-                    ellipseData.semi_major_axis_hidden = ellipseData.semi_minor_axis_hidden = ellipseData.maxRadius > 0f;
+                ellipseConfigData.maxRadius = currentMaxRadius;
+                //ellipseData.maxRadius = maxRadius.floatValue;
+            }
+            EditorGUI.EndDisabledGroup();
+            /***************************/
 
-                    ellipseData.minRadiusHidden = ellipseData.maxRadius > 0f && ellipseData.eccentricity > 0f;
-                    ellipseData.eccentricityHidden = ellipseData.maxRadius > 0f && ellipseData.minRadius > 0f;
-                }
-            } 
-
-            if (!ellipseData.semi_major_axis_hidden)
+            /********** Semi-Major Axis *******/
+            EditorGUI.BeginDisabledGroup(ellipseConfigData.smaHidden);
+            EditorGUI.BeginChangeCheck();
+            currentSMA = EditorGUILayout.FloatField(new GUIContent("Semi-Major Axis", "The major axis of an ellipse is its longest diameter: the semi-major axis is one half of the major axis"), currentSMA);
+            //EditorGUILayout.PropertyField(semi_major_axis, new GUIContent("Semi-Major Axis", "The major axis of an ellipse is its longest diameter: the semi-major axis is one half of the major axis"));
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                EditorGUILayout.PropertyField(semi_major_axis, new GUIContent("Semi-Major Axis", "The major axis of an ellipse is its longest diameter: the semi-major axis is one half of the major axis"));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    ellipseData.semi_major_axis = semi_major_axis.floatValue;
-                    ellipseData.maxRadiusHidden = ellipseData.minRadiusHidden = ellipseData.semi_major_axis > 0f;
-
-                    ellipseData.semi_minor_axis_hidden = ellipseData.semi_major_axis > 0f && ellipseData.eccentricity > 0f;
-                    ellipseData.eccentricityHidden = ellipseData.semi_major_axis > 0f && ellipseData.semi_minor_axis > 0f;
-                }
+                ellipseConfigData.semi_major_axis = currentSMA;
             }
+            EditorGUI.EndDisabledGroup();
+            /***************************/
 
-            if (!ellipseData.semi_minor_axis_hidden)
+            /********** Semi-Minor Axis *******/
+            EditorGUI.BeginDisabledGroup(ellipseConfigData.smiHidden);
+            EditorGUI.BeginChangeCheck();
+            currentSMI = EditorGUILayout.FloatField(new GUIContent("Semi-Minor Axis", "The minor axis of an ellipse is its shortest diameter: the semi-minor axis is one half of the minor axis"), currentSMI);
+            //EditorGUILayout.PropertyField(semi_minor_axis, new GUIContent("Semi-Minor Axis", "The minor axis of an ellipse is its shortest diameter: the semi-minor axis is one half of the minor axis"));
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                EditorGUILayout.PropertyField(semi_minor_axis, new GUIContent("Semi-Minor Axis", "The minor axis of an ellipse is its shortest diameter: the semi-minor axis is one half of the minor axis"));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    ellipseData.semi_minor_axis = semi_minor_axis.floatValue;
-                    ellipseData.maxRadiusHidden = ellipseData.minRadiusHidden = ellipseData.semi_minor_axis > 0f;
-
-                    ellipseData.semi_major_axis_hidden = ellipseData.semi_minor_axis > 0f && ellipseData.eccentricity > 0f;
-                    ellipseData.eccentricityHidden = ellipseData.semi_minor_axis > 0f && ellipseData.semi_major_axis > 0f;
-                }
+                ellipseConfigData.semi_minor_axis = currentSMI;
             }
-            
-            if (!ellipseData.eccentricityHidden)
+            EditorGUI.EndDisabledGroup();
+            /***************************/
+
+            /********** Eccentricity *******/
+            EditorGUI.BeginDisabledGroup(ellipseConfigData.eccentricityHidden);
+            EditorGUI.BeginChangeCheck();
+            //EditorGUILayout.PropertyField(eccentricity, new GUIContent("Eccentricity", "Eccentricity [0, 1] is a measure of how much the conic section deviates from being circular (circle = 0, hyperbola = 1"));
+            currentEccentricity = EditorGUILayout.Slider(new GUIContent("Eccentricity", "Eccentricity [0, 1] is a measure of how much the conic section deviates from being circular (circle = 0, hyperbola = 1"), currentEccentricity, 0f, 1f);
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.BeginChangeCheck();
-                EditorGUILayout.PropertyField(eccentricity, new GUIContent("Eccentricity", "Eccentricity [0, 1] is a measure of how much the conic section deviates from being circular (circle = 0, hyperbola = 1"));
-                if (EditorGUI.EndChangeCheck())
-                {
-                    ellipseData.eccentricity = eccentricity.floatValue;
+                ellipseConfigData.eccentricity = currentEccentricity;
+            }
+            EditorGUI.EndDisabledGroup();
+            /***************************/
 
-                    ellipseData.minRadiusHidden = ellipseData.eccentricity > 0f && (ellipseData.maxRadius > 0f || ellipseData.semi_major_axis > 0f || ellipseData.semi_minor_axis > 0f);
-                    ellipseData.maxRadiusHidden = ellipseData.eccentricity > 0f && (ellipseData.minRadius > 0f || ellipseData.semi_major_axis > 0f || ellipseData.semi_minor_axis > 0f);
-                    ellipseData.semi_major_axis_hidden = ellipseData.eccentricity > 0f || (ellipseData.semi_minor_axis > 0f || ellipseData.minRadius > 0f || ellipseData.maxRadius > 0f);
-                    ellipseData.semi_minor_axis_hidden = ellipseData.eccentricity > 0f || (ellipseData.semi_major_axis > 0f || ellipseData.minRadius > 0f || ellipseData.maxRadius > 0f);
+            ellipseConfigData.HideElements(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity);
 
-                }
-            }
+            ellipseConfigData.CaclulateHiddenElementsValue(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity, ref semi_latus_rectum);
 
-            if (ellipseData.minRadius > 0f && ellipseData.maxRadius > 0f)
-            {
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_1(ellipseData.minRadius, ellipseData.maxRadius);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_1(ellipseData.minRadius, ellipseData.maxRadius);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-                eccentricity.floatValue = EllipseCalculation.Eccentricity_1(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-            }
-            else if (ellipseData.minRadius > 0f && ellipseData.eccentricity > 0f)
-            {              
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_5(ellipseData.minRadius, ellipseData.eccentricity);
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_minor_axis.floatValue, ellipseData.eccentricity);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, ellipseData.eccentricity);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-             
-            }
-            else if (ellipseData.maxRadius > 0f && ellipseData.eccentricity > 0f)
-            {
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_6(ellipseData.maxRadius, ellipseData.eccentricity);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, ellipseData.eccentricity);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, ellipseData.eccentricity);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-            }
-            else if (ellipseData.semi_major_axis > 0f && ellipseData.semi_minor_axis > 0f)
-            {
-                eccentricity.floatValue = EllipseCalculation.Eccentricity_1(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(ellipseData.semi_major_axis, eccentricity.floatValue);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(ellipseData.semi_major_axis, eccentricity.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-                
-            }
-            else if (ellipseData.semi_major_axis > 0f && ellipseData.eccentricity > 0f)
-            {
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(ellipseData.semi_major_axis, ellipseData.eccentricity);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(ellipseData.semi_major_axis, ellipseData.eccentricity);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(ellipseData.semi_major_axis, ellipseData.eccentricity);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-            }
-            else if (ellipseData.semi_minor_axis > 0f && ellipseData.eccentricity > 0f)
-            {
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_2(ellipseData.semi_minor_axis, ellipseData.eccentricity);
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, ellipseData.eccentricity);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, ellipseData.eccentricity);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-            }
-
-            ellipseDataList[index] = ellipseData;
-
-            EditorGUI.indentLevel -= 1;
+            ellipseConfigData.UpdateLineRenderConfigs(lineColour.colorValue, widthCurve.animationCurveValue, widthMultiplier.floatValue, segments.intValue);
         }
     }
 
-    class EllipseData
+    public class EllipseConfigData
     {
-        public float minRadius = 0f, maxRadius = 0f;
-        public float semi_major_axis = 0f, semi_minor_axis = 0f;
-        public float eccentricity = 0f;
+        public Color lineColour;
+        public AnimationCurve widthCurve;
+        public float widthMultiplier;
+        public int segments;
+
+        public float minRadius;
+        public float maxRadius;
+        public float semi_major_axis;
+        public float semi_minor_axis;
+        public float eccentricity;
+        public float semi_latus_rectum;
 
         public bool minRadiusHidden, maxRadiusHidden;
-        public bool semi_major_axis_hidden, semi_minor_axis_hidden;
+        public bool smaHidden, smiHidden;
         public bool eccentricityHidden;
 
-        public EllipseData(float minRadius, float maxRadius, float semi_major_axis, float semi_minor_axis, float eccentricity)
+        public EllipseConfigData(SerializedProperty ellipseData)
         {
-            this.minRadius = minRadius;
-            this.maxRadius = maxRadius;
-            this.semi_major_axis = semi_major_axis;
-            this.semi_minor_axis = semi_minor_axis;
-            this.eccentricity = eccentricity;
-
-            minRadiusHidden = (semi_minor_axis > 0f || semi_major_axis > 0f) || (maxRadius > 0f && eccentricity > 0f);
-            maxRadiusHidden = (semi_minor_axis > 0f || semi_major_axis > 0f) || (minRadius > 0f && eccentricity > 0f);
-            semi_major_axis_hidden = (minRadius > 0f || maxRadius > 0f) || (semi_minor_axis > 0f && eccentricity > 0f);
-            semi_minor_axis_hidden = (minRadius > 0f || maxRadius > 0f) || (semi_major_axis > 0f && eccentricity > 0f);
-            eccentricityHidden = (minRadius > 0f && maxRadius > 0f) || (semi_major_axis > 0f && semi_minor_axis > 0f);
-
-            if (minRadiusHidden) minRadius = 0f;
-            if (maxRadiusHidden) maxRadius = 0f;
-            if (semi_major_axis_hidden) semi_major_axis = 0f;
-            if (semi_minor_axis_hidden) semi_minor_axis = 0f;
-            if (eccentricityHidden) eccentricity = 0f;
+            lineColour = ellipseData.FindPropertyRelative("lineColour").colorValue == Color.black ? Color.white : ellipseData.FindPropertyRelative("lineColour").colorValue;
+            widthCurve = ellipseData.FindPropertyRelative("widthCurve").animationCurveValue;
+            widthMultiplier = ellipseData.FindPropertyRelative("widthMultiplier").floatValue == 0 ? 1 : ellipseData.FindPropertyRelative("widthMultiplier").floatValue;
+            segments = ellipseData.FindPropertyRelative("segments").intValue == 0 ? 100 : ellipseData.FindPropertyRelative("segments").intValue;
         }
 
-        public void Update (ref SerializedProperty minRadius, ref SerializedProperty maxRadius, ref SerializedProperty semi_major_axis, ref SerializedProperty semi_minor_axis, ref SerializedProperty eccentricity)
+        public void UpdateLineRenderConfigs(Color colour, AnimationCurve animCurve, float widthMultiplier, int segments)
         {
-            if (minRadiusHidden)
-                minRadius.floatValue = 0f;
-          
-            if (maxRadiusHidden)
-                maxRadius.floatValue = 0f;
-
-            if (semi_major_axis_hidden)
-                semi_major_axis.floatValue = 0f;
-
-            if (semi_minor_axis_hidden)
-                semi_minor_axis.floatValue = 0f;
-
-            if (eccentricityHidden)
-                eccentricity.floatValue = 0f;
+            lineColour = colour;
+            widthCurve = animCurve;
+            this.widthMultiplier = widthMultiplier;
+            this.segments = segments;
         }
 
-        public override string ToString()
+        public void HideElements(ref SerializedProperty minRadius, ref SerializedProperty maxRadius, ref SerializedProperty semi_major_axis, ref SerializedProperty semi_minor_axis, ref SerializedProperty eccentricity)
         {
-            return "Min Radius: " + minRadius + " | Min Radius Hidden: " + minRadiusHidden + "\t" +
-                    "Max Radius: " + maxRadius + " | Max Radius Hidden: " + maxRadiusHidden + "\n" +
-                    "Semi-Major Axis: " + semi_major_axis + " | Semi-Major Axis Hidden: " + semi_major_axis_hidden + "\t" +
-                    "Semi-Minor Axis: " + semi_minor_axis + " | Semi-Minor Axis Hidden: " + semi_minor_axis_hidden + "\t" +
-                    "Eccentricity : " + eccentricity + " | Eccentricity Hidden: " + eccentricityHidden;
+            HideMinRadius(ref minRadius);
+            HideMaxRadius(ref maxRadius);
+            HideSMA(ref semi_major_axis);
+            HideSMI(ref semi_minor_axis);
+            HideEccentricity(ref eccentricity);
+        }
+
+        void HideMinRadius (ref SerializedProperty minRadius)
+        {
+            bool minRadiusHiddenBefore = minRadiusHidden;
+
+            minRadiusHidden = (maxRadius > 0f && eccentricity > 0f) || (semi_major_axis > 0f || semi_minor_axis > 0f);
+            if (!minRadiusHidden)
+            {
+                if (minRadiusHiddenBefore)
+                {
+                    this.minRadius = 0f;
+                    minRadius.floatValue = this.minRadius;
+                }
+            }
+        }
+
+        void HideMaxRadius(ref SerializedProperty maxRadius)
+        {
+            bool maxRadiusHiddenBefore = maxRadiusHidden;
+
+            maxRadiusHidden = (minRadius > 0f && eccentricity > 0f) || (semi_major_axis > 0f || semi_minor_axis > 0f);
+            if (!maxRadiusHidden)
+            {
+                if (maxRadiusHiddenBefore)
+                {
+                    this.maxRadius = 0f;
+                    maxRadius.floatValue = 0f;
+                }
+            }
+        }
+
+        void HideSMA(ref SerializedProperty semi_major_axis)
+        {
+            bool smaHiddenBefore = smaHidden;
+
+            smaHidden = (semi_minor_axis > 0f && eccentricity > 0f) || (maxRadius > 0f || minRadius > 0f);
+            if (!smaHidden)
+            {
+                if (smaHiddenBefore)
+                {
+                    this.semi_major_axis = 0f;
+                    semi_major_axis.floatValue = 0f;
+                }
+            }
+        }
+
+        void HideSMI(ref SerializedProperty semi_minor_axis)
+        {
+            bool smiHiddenBefore = smiHidden;
+
+            smiHidden = (semi_major_axis > 0f && eccentricity > 0f) || (maxRadius > 0f || minRadius > 0f);
+            if (!smiHidden)
+            {
+                if (smiHiddenBefore)
+                {
+                    this.semi_minor_axis = 0f;
+                    semi_minor_axis.floatValue = 0f;
+                }
+            }
+        }
+
+        void HideEccentricity(ref SerializedProperty eccentricity)
+        {
+            bool eccentricityHiddenBefore = eccentricityHidden;
+
+            eccentricityHidden = (maxRadius > 0f && minRadius > 0f) || (semi_major_axis > 0f && semi_minor_axis > 0f);
+            if (!eccentricityHidden)
+            {
+                if (eccentricityHiddenBefore)
+                {
+                    this.eccentricity = 0f;
+                    eccentricity.floatValue = 0f;
+                }
+            }
+        }
+
+        public bool CaclulateHiddenElementsValue(ref SerializedProperty minRadius, ref SerializedProperty maxRadius, ref SerializedProperty semi_major_axis, ref SerializedProperty semi_minor_axis, ref SerializedProperty eccentricity, ref SerializedProperty semi_latus_rectum)
+        {
+            bool succesful = false;
+
+            if (this.minRadius > 0f && this.maxRadius > 0f)
+            {
+                minRadius.floatValue = this.minRadius;
+                maxRadius.floatValue = this.maxRadius;
+                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_1(minRadius.floatValue, maxRadius.floatValue);
+                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_1(minRadius.floatValue, maxRadius.floatValue);
+                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+                eccentricity.floatValue = EllipseCalculation.Eccentricity_1(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+
+                succesful = true;
+            }
+            else if (this.minRadius > 0f && this.eccentricity > 0f)
+            {
+                minRadius.floatValue = this.minRadius;
+                eccentricity.floatValue = this.eccentricity;
+                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_5(minRadius.floatValue, eccentricity.floatValue);
+                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, eccentricity.floatValue);
+                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_minor_axis.floatValue, eccentricity.floatValue);
+                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+
+                succesful = true;
+            }
+            else if (this.maxRadius > 0f && this.eccentricity > 0f)
+            {
+                maxRadius.floatValue = this.maxRadius;
+                eccentricity.floatValue = this.eccentricity;
+                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_6(maxRadius.floatValue, eccentricity.floatValue);
+                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, eccentricity.floatValue);
+                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+
+                succesful = true;
+            }
+            else if (this.semi_major_axis > 0f && this.semi_minor_axis > 0f)
+            {
+                semi_major_axis.floatValue = this.semi_major_axis;
+                semi_minor_axis.floatValue = this.semi_minor_axis;
+                eccentricity.floatValue = EllipseCalculation.Eccentricity_1(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+
+                succesful = true;
+            }
+            else if (this.semi_major_axis > 0f && this.eccentricity > 0f)
+            {
+                semi_major_axis.floatValue = this.semi_major_axis;
+                eccentricity.floatValue = this.eccentricity;
+                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, eccentricity.floatValue);
+                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+
+                succesful = true;
+            }
+            else if (this.semi_minor_axis > 0f && this.eccentricity > 0f)
+            {
+                semi_minor_axis.floatValue = this.semi_minor_axis;
+                eccentricity.floatValue = this.eccentricity;
+                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_2(semi_minor_axis.floatValue, eccentricity.floatValue);
+                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
+                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
+
+                succesful = true;
+            }
+
+            return succesful;
         }
     }
+}
+
+
+[System.Serializable]
+public static class EllipseData
+{
+    [SerializeField]
+    public static List<EllipseDrawerEditor.EllipseConfigData> ellipseConfigList = new List<EllipseDrawerEditor.EllipseConfigData>();
 }

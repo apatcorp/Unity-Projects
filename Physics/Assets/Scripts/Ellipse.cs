@@ -4,19 +4,24 @@ using UnityEngine;
 [Serializable]
 public class Ellipse
 {
+    [SerializeField]
     public float minRadius = 1f;
+    [SerializeField]
     public float maxRadius = 5f;
-
+    [SerializeField]
     public float semi_major_axis;
+    [SerializeField]
     public float semi_minor_axis;
 
     [Range(0f, 1f)]
+    [SerializeField]
     public float eccentricity;
 
     [HideInInspector]
+    [SerializeField]
     public float semi_latus_rectum;
 
-    protected float CalculateRadiusAtAngle(float angleInRadians)
+    public float CalculateRadiusAtAngle(float angleInRadians)
     {
         return semi_latus_rectum / (1 + eccentricity * Mathf.Cos(angleInRadians));
     }
@@ -28,14 +33,17 @@ public class Ellipse
     }
 }
 
+[System.Serializable]
 public class EllipticOrbit : Ellipse
 {
-    float orbitalPeriod;
+    public float orbitalPeriod { get; set; }
+
     float gravitationalParamter;
 
     float angularVelocity = 0f;
-    float currentRadius = 0f;
-  
+
+    public float currentRadius { get; set; }
+
 
     float CalculateAngularVelocity()
     {
