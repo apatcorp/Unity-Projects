@@ -5,14 +5,6 @@ using UnityEditor;
 public class EllipseConfigData
 {
     [SerializeField]
-    public Color lineColour;
-    [SerializeField]
-    public AnimationCurve widthCurve;
-    [SerializeField]
-    public float widthMultiplier;
-    [SerializeField]
-    public int segments;
-    [SerializeField]
     public float minRadius;
     [SerializeField]
     public float maxRadius;
@@ -25,26 +17,24 @@ public class EllipseConfigData
     [SerializeField]
     public float semi_latus_rectum;
     [SerializeField]
-    public bool minRadiusHidden, maxRadiusHidden;
+    public bool minRadiusHidden;
     [SerializeField]
-    public bool smaHidden, smiHidden;
+    public bool maxRadiusHidden;
+    [SerializeField]
+    public bool smaHidden;
+    [SerializeField]
+    public bool smiHidden;
     [SerializeField]
     public bool eccentricityHidden;
 
-    public EllipseConfigData(SerializedProperty ellipseData)
+    public EllipseConfigData ()
     {
-        lineColour = ellipseData.FindPropertyRelative("lineColour").colorValue == Color.black ? Color.white : ellipseData.FindPropertyRelative("lineColour").colorValue;
-        widthCurve = ellipseData.FindPropertyRelative("widthCurve").animationCurveValue;
-        widthMultiplier = ellipseData.FindPropertyRelative("widthMultiplier").floatValue == 0 ? 1 : ellipseData.FindPropertyRelative("widthMultiplier").floatValue;
-        segments = ellipseData.FindPropertyRelative("segments").intValue == 0 ? 100 : ellipseData.FindPropertyRelative("segments").intValue;
-    }
-
-    public void UpdateLineRenderConfigs(SerializedProperty colour, SerializedProperty animCurve, SerializedProperty widthMultiplier, SerializedProperty segments)
-    {
-        lineColour = colour.colorValue;
-        widthCurve = animCurve.animationCurveValue;
-        this.widthMultiplier = widthMultiplier.floatValue;
-        this.segments = segments.intValue;
+        minRadius = 0;
+        maxRadius = 0;
+        semi_major_axis = 0;
+        semi_minor_axis = 0;
+        eccentricity = 0;
+        minRadiusHidden = maxRadiusHidden = smaHidden = smiHidden = eccentricityHidden = false;
     }
 
     public void HideElements(ref SerializedProperty minRadius, ref SerializedProperty maxRadius, ref SerializedProperty semi_major_axis, ref SerializedProperty semi_minor_axis, ref SerializedProperty eccentricity)

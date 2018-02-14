@@ -13,17 +13,17 @@ public class EllipseDrawerEditor : Editor
     [SerializeField]
     List<EllipseConfigData> ellipseConfigList;
 
-
     void OnEnable()
     {
         ellipsesList = serializedObject.FindProperty("ellipses");
         EllipseDrawer drawer = (EllipseDrawer)target;
         ellipseConfigList = drawer.ellipseConfigData;
-
     }
 
     public override void OnInspectorGUI()
     {
+        serializedObject.Update();
+
         EditorGUILayout.BeginVertical(new GUIStyle());
         EditorGUILayout.PropertyField(ellipsesList, new GUIContent("List of Ellipses"));
 
@@ -31,12 +31,16 @@ public class EllipseDrawerEditor : Editor
         {
             EditorGUILayout.PropertyField(ellipsesList.FindPropertyRelative("Array.size"), new GUIContent("Count", "Amount of ellipses to be drawn"));   
         }
-
+    
         EditorGUI.indentLevel += 1;
+
         for (int i = 0; i < ellipsesList.arraySize; i++)
         {
             if (ellipsesList.GetArrayElementAtIndex(i) == null)
+            {
                 ellipsesList.DeleteArrayElementAtIndex(i);
+                ellipseConfigList.RemoveAt(i);
+            }
               
             if (ellipsesList.isExpanded)
             {
@@ -50,19 +54,12 @@ public class EllipseDrawerEditor : Editor
         EditorGUI.indentLevel -= 1;
 
         EditorGUILayout.EndVertical();
-
-        if (GUI.changed)
-            EditorUtility.SetDirty(target);
-
-        serializedObject.Update();
-
-        serializedObject.ApplyModifiedProperties();
     }
 
     void DrawEllipseConfiguration(int index, SerializedProperty ellipseConfig)
     {
         EllipseConfigData ellipseConfigData;
-
+        
         SerializedProperty lineMaterial = ellipseConfig.FindPropertyRelative("lineMaterial");
         SerializedProperty lineColour = ellipseConfig.FindPropertyRelative("lineColour");
         SerializedProperty widthCurve = ellipseConfig.FindPropertyRelative("widthCurve");
@@ -77,20 +74,26 @@ public class EllipseDrawerEditor : Editor
         SerializedProperty eccentricity = ellipse.FindPropertyRelative("eccentricity");
         SerializedProperty semi_latus_rectum = ellipse.FindPropertyRelative("semi_latus_rectum");
 
-        if (ellipseConfigList.Count > 0)
+
+        if (ellipseConfigList.Count > 0 && index < ellipseConfigList.Count)
         {
             ellipseConfigData = ellipseConfigList[index];
         } else
         {
             Debug.Log(ellipseConfig.displayName);
-            ellipseConfigData = new EllipseConfigData(ellipseConfig);
+            ellipseConfigData = new EllipseConfigData();
             ellipseConfigList.Add(ellipseConfigData);
-        }
 
-        lineColour.colorValue = ellipseConfigData.lineColour;
-        widthCurve.animationCurveValue = ellipseConfigData.widthCurve;
-        widthMultiplier.floatValue = ellipseConfigData.widthMultiplier;
-        segments.intValue = ellipseConfigData.segments;
+            lineColour.colorValue = Color.white;
+            Keyframe[] keyframes = new Keyframe[2];
+            keyframes[0].time = 0f;
+            keyframes[0].value = 0.5f;
+            keyframes[1].time = 1f;
+            keyframes[1].value = 0.5f;
+            widthCurve.animationCurveValue = new AnimationCurve(keyframes);
+            widthMultiplier.floatValue = 1f;
+            segments.intValue = 100;
+        }
 
         float currentMinRadius = ellipseConfigData.minRadius;
         float currentMaxRadius = ellipseConfigData.maxRadius;
@@ -117,7 +120,6 @@ public class EllipseDrawerEditor : Editor
             EditorGUI.BeginDisabledGroup(ellipseConfigData.minRadiusHidden);
             EditorGUI.BeginChangeCheck();
             currentMinRadius = EditorGUILayout.FloatField(new GUIContent("Min Radius", "Minimum Radius From Focus Point (Perihelion)"), currentMinRadius);
-            //EditorGUILayout.PropertyField(minRadius, new GUIContent("Min Radius", "Minimum Radius From Focus Point (Perihelion)"));
             if (EditorGUI.EndChangeCheck())
             {
                 ellipseConfigData.minRadius = currentMinRadius;
@@ -129,11 +131,9 @@ public class EllipseDrawerEditor : Editor
             EditorGUI.BeginDisabledGroup(ellipseConfigData.maxRadiusHidden);
             EditorGUI.BeginChangeCheck();
             currentMaxRadius = EditorGUILayout.FloatField(new GUIContent("Max Radius", "Maximum Radius From Focus Point (Aphelion)"), currentMaxRadius);
-            //EditorGUILayout.PropertyField(maxRadius, new GUIContent("Max Radius", "Maximum Radius From Focus Point (Aphelion)"));
             if (EditorGUI.EndChangeCheck())
             {
                 ellipseConfigData.maxRadius = currentMaxRadius;
-                //ellipseData.maxRadius = maxRadius.floatValue;
             }
             EditorGUI.EndDisabledGroup();
             /***************************/
@@ -142,7 +142,6 @@ public class EllipseDrawerEditor : Editor
             EditorGUI.BeginDisabledGroup(ellipseConfigData.smaHidden);
             EditorGUI.BeginChangeCheck();
             currentSMA = EditorGUILayout.FloatField(new GUIContent("Semi-Major Axis", "The major axis of an ellipse is its longest diameter: the semi-major axis is one half of the major axis"), currentSMA);
-            //EditorGUILayout.PropertyField(semi_major_axis, new GUIContent("Semi-Major Axis", "The major axis of an ellipse is its longest diameter: the semi-major axis is one half of the major axis"));
             if (EditorGUI.EndChangeCheck())
             {
                 ellipseConfigData.semi_major_axis = currentSMA;
@@ -154,7 +153,6 @@ public class EllipseDrawerEditor : Editor
             EditorGUI.BeginDisabledGroup(ellipseConfigData.smiHidden);
             EditorGUI.BeginChangeCheck();
             currentSMI = EditorGUILayout.FloatField(new GUIContent("Semi-Minor Axis", "The minor axis of an ellipse is its shortest diameter: the semi-minor axis is one half of the minor axis"), currentSMI);
-            //EditorGUILayout.PropertyField(semi_minor_axis, new GUIContent("Semi-Minor Axis", "The minor axis of an ellipse is its shortest diameter: the semi-minor axis is one half of the minor axis"));
             if (EditorGUI.EndChangeCheck())
             {
                 ellipseConfigData.semi_minor_axis = currentSMI;
@@ -165,7 +163,6 @@ public class EllipseDrawerEditor : Editor
             /********** Eccentricity *******/
             EditorGUI.BeginDisabledGroup(ellipseConfigData.eccentricityHidden);
             EditorGUI.BeginChangeCheck();
-            //EditorGUILayout.PropertyField(eccentricity, new GUIContent("Eccentricity", "Eccentricity [0, 1] is a measure of how much the conic section deviates from being circular (circle = 0, hyperbola = 1"));
             currentEccentricity = EditorGUILayout.Slider(new GUIContent("Eccentricity", "Eccentricity [0, 1] is a measure of how much the conic section deviates from being circular (circle = 0, hyperbola = 1"), currentEccentricity, 0f, 1f);
             if (EditorGUI.EndChangeCheck())
             {
@@ -174,11 +171,17 @@ public class EllipseDrawerEditor : Editor
             EditorGUI.EndDisabledGroup();
             /***************************/
 
+            serializedObject.ApplyModifiedProperties();
+            serializedObject.Update();
+
             ellipseConfigData.HideElements(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity);
 
             ellipseConfigData.CaclulateHiddenElementsValue(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity, ref semi_latus_rectum);
 
-            ellipseConfigData.UpdateLineRenderConfigs(lineColour, widthCurve, widthMultiplier, segments);
+            ellipseConfigList[index] = ellipseConfigData;
+
+            serializedObject.ApplyModifiedProperties();
+            serializedObject.Update();
         }
     }
 }

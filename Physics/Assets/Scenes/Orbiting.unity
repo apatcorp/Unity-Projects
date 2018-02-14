@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -254,19 +254,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ellipses:
   - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
-    lineColour: {r: 0.8455882, g: 0.062175613, b: 0.062175613, a: 0}
+    lineColour: {r: 0.2634083, g: 0.7065743, b: 0.85294116, a: 0}
     widthCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 2
         time: 0
-        value: 0.20624924
+        value: 0.17250061
         inSlope: 0
         outSlope: 0
         tangentMode: 0
       - serializedVersion: 2
         time: 1
-        value: 0.20624924
+        value: 0.17250061
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -274,37 +274,225 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 0
     widthMultiplier: 1
-    segments: 100
+    segments: 238
     ellipse:
-      minRadius: 3.2153907
-      maxRadius: 44.78461
-      semi_major_axis: 24
-      semi_minor_axis: 12
-      eccentricity: 0.8660254
-      semi_latus_rectum: 6
+      minRadius: 3.24
+      maxRadius: 16.76
+      semi_major_axis: 10
+      semi_minor_axis: 7.3690166
+      eccentricity: 0.676
+      semi_latus_rectum: 5.4302406
   ellipseConfigData:
-  - lineColour: {r: 0, g: 0.83448267, b: 1, a: 0}
-    widthCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0
-        value: 0.20624924
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-      - serializedVersion: 2
-        time: 1
-        value: 0.20624924
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    widthMultiplier: 1
-    segments: 100
-    minRadius: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 10
+    semi_minor_axis: 0
+    eccentricity: 0.676
+    semi_latus_rectum: 0
+    minRadiusHidden: 1
+    maxRadiusHidden: 1
+    smaHidden: 0
+    smiHidden: 1
+    eccentricityHidden: 0
+  - minRadius: 9
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 1
+    smiHidden: 1
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
+  - minRadius: 0
     maxRadius: 0
     semi_major_axis: 0
     semi_minor_axis: 0
