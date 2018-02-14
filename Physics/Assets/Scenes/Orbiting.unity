@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -240,7 +240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &296185539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,6 +282,39 @@ MonoBehaviour:
       semi_minor_axis: 12
       eccentricity: 0.8660254
       semi_latus_rectum: 6
+  ellipseConfigData:
+  - lineColour: {r: 0, g: 0.83448267, b: 1, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.20624924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.20624924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    widthMultiplier: 1
+    segments: 100
+    minRadius: 0
+    maxRadius: 0
+    semi_major_axis: 0
+    semi_minor_axis: 0
+    eccentricity: 0
+    semi_latus_rectum: 0
+    minRadiusHidden: 0
+    maxRadiusHidden: 0
+    smaHidden: 0
+    smiHidden: 0
+    eccentricityHidden: 0
 --- !u!4 &296185541
 Transform:
   m_ObjectHideFlags: 0
@@ -1175,12 +1208,12 @@ GameObject:
   - component: {fileID: 2066364952}
   - component: {fileID: 2066364951}
   m_Layer: 0
-  m_Name: EllipticalOrbit
+  m_Name: Elliptical Orbit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2066364951
 MonoBehaviour:
   m_ObjectHideFlags: 0

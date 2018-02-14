@@ -7,6 +7,9 @@ public class EllipseDrawer : MonoBehaviour
     [SerializeField]
     public List<EllipseConfiguration> ellipses;
 
+    [HideInInspector, SerializeField]
+    public List<EllipseConfigData> ellipseConfigData = new List<EllipseConfigData>();
+
     void Start ()
     {
         DrawEllipses();
