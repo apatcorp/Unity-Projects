@@ -11,11 +11,13 @@ public class EllipticalMotionEditor : Editor
     SerializedProperty ellipticalMotion;
 
     [SerializeField]
-    ElliptcalMotionData ellipseData = new ElliptcalMotionData();
+    ElliptcalMotionData ellipseData;
 
     void OnEnable()
     {
         ellipticalMotion = serializedObject.FindProperty("ellipse");
+        ellipseData = ((EllipticalMotion)target).ellipseMotionData;
+        ellipseData = new ElliptcalMotionData();
     }
 
     public override void OnInspectorGUI()
@@ -27,10 +29,6 @@ public class EllipticalMotionEditor : Editor
         EditorGUI.indentLevel -= 1;
 
         EditorGUILayout.EndVertical();
-
-        serializedObject.Update();
-
-        serializedObject.ApplyModifiedProperties();
     }
 
     void DrawEllipseConfiguration()
@@ -53,7 +51,7 @@ public class EllipticalMotionEditor : Editor
         EditorGUILayout.LabelField("Ellipse", EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox("Set two parameters > 0 to define the ellipse", MessageType.Info, true);
-           
+
         /********** Min Radius *******/
         EditorGUI.BeginDisabledGroup(ellipseData.minRadiusHidden);
         EditorGUI.BeginChangeCheck();
@@ -115,219 +113,35 @@ public class EllipticalMotionEditor : Editor
         EditorGUI.EndDisabledGroup();
         /***************************/
 
-        ellipseData.useOrbitalPeriod = EditorGUILayout.Toggle(new GUIContent("Use Orbital Period"), ellipseData.useOrbitalPeriod);
-           
-        if (ellipseData.useOrbitalPeriod)
-        { 
-            /********** Orbital Period *******/
-            EditorGUI.BeginDisabledGroup(ellipseData.orbitalPeriodHidden);
-            EditorGUI.BeginChangeCheck();
-            currentOrbitalPeriod = EditorGUILayout.FloatField(new GUIContent("Orbital Period", "Time it takes the orbiting object to complete one complete cycle"), currentOrbitalPeriod);
-            if (EditorGUI.EndChangeCheck())
-            {
-                ellipseData.orbitalPeriod = currentOrbitalPeriod;
-            }
-            EditorGUI.EndDisabledGroup();
-            /***************************/
+        /********** Orbital Period *******/
+        EditorGUI.BeginDisabledGroup(ellipseData.orbitalPeriodHidden);
+        EditorGUI.BeginChangeCheck();
+        currentOrbitalPeriod = EditorGUILayout.FloatField(new GUIContent("Orbital Period", "Time it takes the orbiting object to complete one complete cycle"), currentOrbitalPeriod);
+        if (EditorGUI.EndChangeCheck())
+        {
+            ellipseData.orbitalPeriod = currentOrbitalPeriod;
+        }
+        EditorGUI.EndDisabledGroup();
+        /***************************/
+        
+        if (currentOrbitalPeriod > 0f)
+        {
+            EditorGUI.indentLevel += 1;
+            ellipseData.orbitingMass = EditorGUILayout.FloatField(new GUIContent("Orbiting Mass", "The Mass of the orbiting object"), ellipseData.orbitingMass);
+            ellipseData.centralMass = EditorGUILayout.FloatField(new GUIContent("Central Mass", "The Mass of the central object"), ellipseData.centralMass);
+            ellipseData.G = EditorGUILayout.FloatField(new GUIContent("G", "Gravitational Constant"), ellipseData.G);
+            EditorGUI.indentLevel -= 1;
         }
 
+        serializedObject.ApplyModifiedProperties();
+        serializedObject.Update();
 
         ellipseData.HideElements(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity, ref orbitalPeriod);
 
         ellipseData.CaclulateHiddenElementsValue(ref minRadius, ref maxRadius, ref semi_major_axis, ref semi_minor_axis, ref eccentricity, ref semi_latus_rectum, ref orbitalPeriod);
+
+        serializedObject.ApplyModifiedProperties();
+        serializedObject.Update();
     }
 
-    public class ElliptcalMotionData
-    {
-        public float minRadius;
-        public float maxRadius;
-        public float semi_major_axis;
-        public float semi_minor_axis;
-        public float eccentricity;
-        public float semi_latus_rectum;
-        public float orbitalPeriod;
-
-        public bool minRadiusHidden, maxRadiusHidden;
-        public bool smaHidden, smiHidden;
-        public bool eccentricityHidden;
-        public bool orbitalPeriodHidden;
-
-        public bool useOrbitalPeriod;
-
-        public void HideElements(ref SerializedProperty minRadius, ref SerializedProperty maxRadius, ref SerializedProperty semi_major_axis, ref SerializedProperty semi_minor_axis, ref SerializedProperty eccentricity, ref SerializedProperty orbitalPeriod)
-        {
-            HideMinRadius(ref minRadius);
-            HideMaxRadius(ref maxRadius);
-            HideSMA(ref semi_major_axis);
-            HideSMI(ref semi_minor_axis);
-            HideEccentricity(ref eccentricity);
-            HideOrbitalPeriod(ref orbitalPeriod);
-        }
-
-        void HideMinRadius (ref SerializedProperty minRadius)
-        {
-            bool minRadiusHiddenBefore = minRadiusHidden;
-
-            minRadiusHidden = (maxRadius > 0f && eccentricity > 0f && orbitalPeriod > 0f) || (maxRadius > 0f && eccentricity > 0f) ||  (semi_major_axis > 0f || semi_minor_axis > 0f);
-            if (!minRadiusHidden)
-            {
-                if (minRadiusHiddenBefore)
-                {
-                    this.minRadius = 0f;
-                    minRadius.floatValue = this.minRadius;
-                }
-            }
-        }
-
-        void HideMaxRadius(ref SerializedProperty maxRadius)
-        {
-            bool maxRadiusHiddenBefore = maxRadiusHidden;
-
-            maxRadiusHidden = (minRadius > 0f && eccentricity > 0f) || (minRadius > 0f && orbitalPeriod > 0f) || (eccentricity > 0f && orbitalPeriod > 0f) || (semi_major_axis > 0f || semi_minor_axis > 0f);
-            if (!maxRadiusHidden)
-            {
-                if (maxRadiusHiddenBefore)
-                {
-                    this.maxRadius = 0f;
-                    maxRadius.floatValue = 0f;
-                }
-            }
-        }
-
-        void HideSMA(ref SerializedProperty semi_major_axis)
-        {
-            bool smaHiddenBefore = smaHidden;
-
-            smaHidden = (semi_minor_axis > 0f && eccentricity > 0f) || (semi_minor_axis > 0f && orbitalPeriod > 0f) || (eccentricity > 0f && orbitalPeriod > 0f) || (maxRadius > 0f || minRadius > 0f);
-            if (!smaHidden)
-            {
-                if (smaHiddenBefore)
-                {
-                    this.semi_major_axis = 0f;
-                    semi_major_axis.floatValue = 0f;
-                }
-            }
-        }
-
-        void HideSMI(ref SerializedProperty semi_minor_axis)
-        {
-            bool smiHiddenBefore = smiHidden;
-
-            smiHidden = (semi_major_axis > 0f && eccentricity > 0f) || (semi_major_axis > 0f && orbitalPeriod > 0f) || (eccentricity > 0f && orbitalPeriod > 0f) || (maxRadius > 0f || minRadius > 0f);
-            if (!smiHidden)
-            {
-                if (smiHiddenBefore)
-                {
-                    this.semi_minor_axis = 0f;
-                    semi_minor_axis.floatValue = 0f;
-                }
-            }
-        }
-
-        void HideEccentricity(ref SerializedProperty eccentricity)
-        {
-            bool eccentricityHiddenBefore = eccentricityHidden;
-
-            eccentricityHidden = (maxRadius > 0f && minRadius > 0f) || (maxRadius > 0f && orbitalPeriod > 0f) || (minRadius  > 0f && orbitalPeriod > 0f) || 
-                                (semi_major_axis > 0f && semi_minor_axis > 0f) ||(semi_major_axis > 0f && orbitalPeriod > 0f) || (semi_minor_axis > 0f && orbitalPeriod > 0f);
-            if (!eccentricityHidden)
-            {
-                if (eccentricityHiddenBefore)
-                {
-                    this.eccentricity = 0f;
-                    eccentricity.floatValue = 0f;
-                }
-            }
-        }
-
-        void HideOrbitalPeriod(ref SerializedProperty orbitalPeriod)
-        {
-            bool orbitalPeriodHiddenBefore = orbitalPeriodHidden;
-
-            orbitalPeriodHidden = (maxRadius > 0f && minRadius > 0f) || (maxRadius > 0f && eccentricity > 0f) || (minRadius > 0f && eccentricity > 0f) ||
-                                (semi_major_axis > 0f && semi_minor_axis > 0f) || (semi_major_axis > 0f && eccentricity > 0f) || (semi_minor_axis > 0f && eccentricity > 0f);
-            if (!orbitalPeriodHidden)
-            {
-                if (orbitalPeriodHiddenBefore)
-                {
-                    this.orbitalPeriod = 0f;
-                    orbitalPeriod.floatValue = 0f;
-                }
-            }
-        }
-
-        public bool CaclulateHiddenElementsValue(ref SerializedProperty minRadius, ref SerializedProperty maxRadius, ref SerializedProperty semi_major_axis, ref SerializedProperty semi_minor_axis, ref SerializedProperty eccentricity, ref SerializedProperty semi_latus_rectum, ref SerializedProperty orbitalperiod)
-        {
-            bool succesful = false;
-
-            if (this.minRadius > 0f && this.maxRadius > 0f)
-            {
-                minRadius.floatValue = this.minRadius;
-                maxRadius.floatValue = this.maxRadius;
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_1(minRadius.floatValue, maxRadius.floatValue);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_1(minRadius.floatValue, maxRadius.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-                eccentricity.floatValue = EllipseCalculation.Eccentricity_1(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-                succesful = true;
-            }
-            else if (this.minRadius > 0f && this.eccentricity > 0f)
-            {
-                minRadius.floatValue = this.minRadius;
-                eccentricity.floatValue = this.eccentricity;
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_5(minRadius.floatValue, eccentricity.floatValue);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, eccentricity.floatValue);
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_minor_axis.floatValue, eccentricity.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-                succesful = true;
-            }
-            else if (this.maxRadius > 0f && this.eccentricity > 0f)
-            {
-                maxRadius.floatValue = this.maxRadius;
-                eccentricity.floatValue = this.eccentricity;
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_6(maxRadius.floatValue, eccentricity.floatValue);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, eccentricity.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-                succesful = true;
-            }
-            else if (this.semi_major_axis > 0f && this.semi_minor_axis > 0f)
-            {
-                semi_major_axis.floatValue = this.semi_major_axis;
-                semi_minor_axis.floatValue = this.semi_minor_axis;
-                eccentricity.floatValue = EllipseCalculation.Eccentricity_1(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-                succesful = true;
-            }
-            else if (this.semi_major_axis > 0f && this.eccentricity > 0f)
-            {
-                semi_major_axis.floatValue = this.semi_major_axis;
-                eccentricity.floatValue = this.eccentricity;
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                semi_minor_axis.floatValue = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis.floatValue, eccentricity.floatValue);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-                succesful = true;
-            }
-            else if (this.semi_minor_axis > 0f && this.eccentricity > 0f)
-            {
-                semi_minor_axis.floatValue = this.semi_minor_axis;
-                eccentricity.floatValue = this.eccentricity;
-                semi_major_axis.floatValue = EllipseCalculation.Semi_Major_Axis_2(semi_minor_axis.floatValue, eccentricity.floatValue);
-                maxRadius.floatValue = EllipseCalculation.Max_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                minRadius.floatValue = EllipseCalculation.Min_Radius_1(semi_major_axis.floatValue, eccentricity.floatValue);
-                semi_latus_rectum.floatValue = EllipseCalculation.Semi_Latus_Rectum(semi_major_axis.floatValue, semi_minor_axis.floatValue);
-
-                succesful = true;
-            }
-
-            return succesful;
-        }
-    }
 }

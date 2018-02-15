@@ -36,7 +36,8 @@ public class Ellipse
 [System.Serializable]
 public class EllipticOrbit : Ellipse
 {
-    public float orbitalPeriod { get; set; }
+    [SerializeField, HideInInspector]
+    public float orbitalPeriod;
 
     float gravitationalParamter;
 

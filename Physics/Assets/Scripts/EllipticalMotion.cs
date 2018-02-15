@@ -8,6 +8,9 @@ public class EllipticalMotion : MonoBehaviour
     [Header("Ellipse")]
     public EllipticOrbit ellipse;
 
+    [HideInInspector, SerializeField]
+    public ElliptcalMotionData ellipseMotionData = new ElliptcalMotionData();
+
     Transform orbitalObject;
 
 
@@ -16,9 +19,14 @@ public class EllipticalMotion : MonoBehaviour
         orbitalObject = orbitObjectPrefab != null ? Instantiate(orbitObjectPrefab) : GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
         orbitalObject.SetParent(transform);
 
-        ellipse.orbitalPeriod = EllipseCalculation.Orbiting.CalculateOrbitalPeriod(ellipse.semi_major_axis, SolarSystem.G, 5, 10);
-        ellipse.semi_minor_axis = EllipseCalculation.Semi_Minor_Axis_2(ellipse.semi_major_axis, ellipse.eccentricity);
-        ellipse.semi_latus_rectum = EllipseCalculation.Semi_Latus_Rectum(ellipse.semi_major_axis, ellipse.semi_minor_axis);
+        print(ellipse.maxRadius);
+        print(ellipse.minRadius);
+        print(ellipse.semi_major_axis);
+        print(ellipse.semi_minor_axis);
+        print(ellipse.semi_latus_rectum);
+        print(ellipse.eccentricity);
+        print(ellipse.orbitalPeriod);
+
         ellipse.currentRadius = ellipse.CalculateRadiusAtAngle(0f);
 	}
 

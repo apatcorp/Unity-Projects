@@ -276,33 +276,33 @@ MonoBehaviour:
     widthMultiplier: 1
     segments: 238
     ellipse:
-      minRadius: 3.24
-      maxRadius: 16.76
+      minRadius: 5
+      maxRadius: 15
       semi_major_axis: 10
-      semi_minor_axis: 7.3690166
-      eccentricity: 0.676
-      semi_latus_rectum: 5.4302406
+      semi_minor_axis: 8.660254
+      eccentricity: 0.5
+      semi_latus_rectum: 7.499999
   ellipseConfigData:
   - minRadius: 0
     maxRadius: 0
     semi_major_axis: 10
     semi_minor_axis: 0
-    eccentricity: 0.676
+    eccentricity: 0.5
     semi_latus_rectum: 0
     minRadiusHidden: 1
     maxRadiusHidden: 1
     smaHidden: 0
     smiHidden: 1
     eccentricityHidden: 0
-  - minRadius: 9
+  - minRadius: 0
     maxRadius: 0
-    semi_major_axis: 0
+    semi_major_axis: 20
     semi_minor_axis: 0
-    eccentricity: 0
+    eccentricity: 0.197
     semi_latus_rectum: 0
-    minRadiusHidden: 0
-    maxRadiusHidden: 0
-    smaHidden: 1
+    minRadiusHidden: 1
+    maxRadiusHidden: 1
+    smaHidden: 0
     smiHidden: 1
     eccentricityHidden: 0
   - minRadius: 0
@@ -1401,7 +1401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2066364951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,12 +1415,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orbitObjectPrefab: {fileID: 0}
   ellipse:
-    minRadius: 1
-    maxRadius: 5
-    semi_major_axis: 0
-    semi_minor_axis: 0
-    eccentricity: 0
-    semi_latus_rectum: 0
+    minRadius: 5
+    maxRadius: 15
+    semi_major_axis: 10
+    semi_minor_axis: 8.660254
+    eccentricity: 0.5
+    semi_latus_rectum: 7.499999
+    orbitalPeriod: 8
+  ellipseMotionData:
+    minRadius: 21.609426
+    maxRadius: 10
+    semi_major_axis: 15.804713
+    semi_minor_axis: 14.700145
+    eccentricity: -0.36727735
+    semi_latus_rectum: 13.672773
+    minRadiusHidden: 1
+    maxRadiusHidden: 1
+    smaHidden: 1
+    smiHidden: 1
+    eccentricityHidden: 1
+    orbitalPeriod: 8
+    orbitalPeriodHidden: 1
+    orbitingMass: 0
+    centralMass: 0
+    G: 0
 --- !u!4 &2066364952
 Transform:
   m_ObjectHideFlags: 0
