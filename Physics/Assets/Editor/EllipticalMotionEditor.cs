@@ -17,7 +17,6 @@ public class EllipticalMotionEditor : Editor
     {
         ellipticalMotion = serializedObject.FindProperty("ellipse");
         ellipseData = ((EllipticalMotion)target).ellipseMotionData;
-        ellipseData = new ElliptcalMotionData();
     }
 
     public override void OnInspectorGUI()
@@ -51,6 +50,11 @@ public class EllipticalMotionEditor : Editor
         EditorGUILayout.LabelField("Ellipse", EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox("Set two parameters > 0 to define the ellipse", MessageType.Info, true);
+
+        if (EditorGUILayout.DropdownButton(new GUIContent("Reset"), FocusType.Keyboard))
+        {
+            Reset();
+        }
 
         /********** Min Radius *******/
         EditorGUI.BeginDisabledGroup(ellipseData.minRadiusHidden);
@@ -133,6 +137,8 @@ public class EllipticalMotionEditor : Editor
             EditorGUI.indentLevel -= 1;
         }
 
+        
+
         serializedObject.ApplyModifiedProperties();
         serializedObject.Update();
 
@@ -144,4 +150,17 @@ public class EllipticalMotionEditor : Editor
         serializedObject.Update();
     }
 
+    void Reset()
+    {
+        if (ellipseData != null)
+        {
+            ellipseData.maxRadius = 0f;
+            ellipseData.minRadius = 0f;
+            ellipseData.eccentricity = 0f;
+            ellipseData.semi_major_axis = 0f;
+            ellipseData.semi_minor_axis = 0f;
+            ellipseData.semi_latus_rectum = 0f;
+            ellipseData.orbitalPeriod = 0f;
+        }
+    }
 }

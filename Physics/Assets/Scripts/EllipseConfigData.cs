@@ -240,6 +240,12 @@ public class ElliptcalMotionData : EllipseConfigData
         bool smaHiddenBefore = smaHidden;
 
         smaHidden = (semi_minor_axis > 0f && eccentricity > 0f) || (semi_minor_axis > 0f && orbitalPeriod > 0f) || (eccentricity > 0f && orbitalPeriod > 0f) || (maxRadius > 0f || minRadius > 0f || orbitalPeriod > 0f);
+        if (smaHidden)
+        {
+            if (orbitalPeriod > 0f && G > 0f && orbitingMass > 0f && centralMass > 0f)
+                this.semi_major_axis = EllipseCalculation.Orbiting.Semi_Major_Axis_5(orbitalPeriod, G, orbitingMass, centralMass);
+        }
+
         if (!smaHidden)
         {
             if (smaHiddenBefore)
@@ -285,7 +291,7 @@ public class ElliptcalMotionData : EllipseConfigData
         bool orbitalPeriodHiddenBefore = orbitalPeriodHidden;
 
         orbitalPeriodHidden = (maxRadius > 0f && minRadius > 0f) || (maxRadius > 0f && eccentricity > 0f) || (minRadius > 0f && eccentricity > 0f) ||
-                            (semi_major_axis > 0f && semi_minor_axis > 0f) || (semi_major_axis > 0f && eccentricity > 0f) || (semi_minor_axis > 0f && eccentricity > 0f) || (semi_major_axis > 0f);
+                            (semi_major_axis > 0f && semi_minor_axis > 0f && this.orbitalPeriod == 0f) || (semi_major_axis > 0f && eccentricity > 0f && this.orbitalPeriod == 0f) || (semi_minor_axis > 0f && eccentricity > 0f) || (semi_major_axis > 0f && this.orbitalPeriod == 0f);
 
         if (!orbitalPeriodHidden)
         {
