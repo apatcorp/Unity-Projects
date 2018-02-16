@@ -11,28 +11,26 @@ public class EllipticalMotion : MonoBehaviour
     [HideInInspector, SerializeField]
     public ElliptcalMotionData ellipseMotionData = new ElliptcalMotionData();
 
-    Transform orbitalObject;
+    public bool xy = false;
+    public bool move = false;
 
+    Transform orbitalObject;
 
     void Start ()
     {
         orbitalObject = orbitObjectPrefab != null ? Instantiate(orbitObjectPrefab) : GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
         orbitalObject.SetParent(transform);
-
-        print(ellipse.maxRadius);
-        print(ellipse.minRadius);
-        print(ellipse.semi_major_axis);
-        print(ellipse.semi_minor_axis);
-        print(ellipse.semi_latus_rectum);
-        print(ellipse.eccentricity);
-        print(ellipse.orbitalPeriod);
-
+        
         ellipse.currentRadius = ellipse.CalculateRadiusAtAngle(0f);
 	}
 
+
     void Update()
     {
-        Vector2 position = ellipse.CalculateOrbitalPosition();
-        orbitalObject.localPosition = new Vector3(position.x, position.y, 0f);
+        if (move)
+        {
+            Vector2 position = ellipse.CalculateOrbitalPosition();
+            orbitalObject.localPosition = xy ? new Vector3(position.x, position.y, 0f) : new Vector3(position.x, 0f, position.y);
+        }
     }
 }

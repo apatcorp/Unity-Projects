@@ -7,10 +7,16 @@ public class PlanetaryObject
     public float M { get; private set; }
     public float orbitalSpeed_approximate { get; private set; }
     public float orbitalSpeed_precise { get; private set; }
-    public float radiusToCentre { get; private set; }
+
+    public Vector3 startPosition;
+
+    float radius;
+    float max_radius;
+    float semi_major_axis;
     float semi_minor_axis;
     float semi_latus_rectum;
     float eccentricity;
+    float orbitalPeriod;
 
     float gravitationalParamter;
 
@@ -18,15 +24,24 @@ public class PlanetaryObject
     {
         m = (float)(PlanetaryObjectData.masses[index] / PlanetaryObjectData.masses[(int)Name.EARTH]) * massMulitplier;
         M = CalculateCombinedMass(index, massMulitplier);
+   
+        gravitationalParamter = SolarSystem.G * (M + m);
 
         eccentricity = PlanetaryObjectData.eccentricities[index];
-        radiusToCentre = (float)(PlanetaryObjectData.radiiToCentre[index] / PlanetaryObjectData.radiiToCentre[(int)Name.EARTH]) * radiusMuliplier;
-        semi_minor_axis = radiusToCentre * Mathf.Sqrt((1 - (eccentricity * eccentricity)));
-        semi_latus_rectum = radiusToCentre > 0 ? (semi_minor_axis * semi_minor_axis) / radiusToCentre : 0f; 
+        semi_major_axis = (float)(PlanetaryObjectData.semi_major_axes[index] / PlanetaryObjectData.semi_major_axes[(int)Name.EARTH]) * radiusMuliplier;
+        semi_minor_axis = EllipseCalculation.Semi_Minor_Axis_2(semi_major_axis, eccentricity);
+        semi_latus_rectum = semi_major_axis > 0 ? EllipseCalculation.Semi_Latus_Rectum(semi_major_axis, semi_minor_axis) : 0f;
 
-        orbitalSpeed_approximate = radiusToCentre > 0 ? Mathf.Sqrt((SolarSystem.G * M / radiusToCentre)) : 0f;
+        max_radius = EllipseCalculation.Max_Radius_1(semi_major_axis, eccentricity);
 
-        gravitationalParamter = SolarSystem.G * M;
+        orbitalSpeed_approximate = semi_major_axis > 0 ? Mathf.Sqrt((SolarSystem.G * M / semi_major_axis)) : 0f;
+
+        orbitalPeriod = (float)(PlanetaryObjectData.orbitalPeriods[index] / PlanetaryObjectData.orbitalPeriods[(int)Name.EARTH]) * orbitalPeriodMultiplier;
+
+        radius = EllipseCalculation.Orbiting.CalculateRadiusAtAngle(0f, semi_latus_rectum, eccentricity);
+        startPosition = Vector3.right * radius;
+        orbitalSpeed_precise = CalculateOrbitalSpeed_Precise(startPosition);
+
     }
 
     float CalculateCombinedMass (int index, float massMultiplier)
@@ -41,12 +56,17 @@ public class PlanetaryObject
         return combinedMass / (float)PlanetaryObjectData.masses[(int)Name.EARTH] * massMultiplier;
     }
 
+    public float CalculateOrbitalSpeed_Approximate ()
+    {
+        return Mathf.Sqrt((SolarSystem.G * M / semi_major_axis));
+    }
+
     public float CalculateOrbitalSpeed_Precise(Vector3 position)
     {
         float angleInRadians = Vector3.Angle(Vector3.right, position.normalized) * Mathf.Deg2Rad;
         float radius = semi_latus_rectum / (1 + eccentricity * Mathf.Cos(angleInRadians));
 
-        orbitalSpeed_precise = (radius > 0 && radiusToCentre > 0) ? Mathf.Sqrt(gravitationalParamter * ((2f / radius) - (1f / radiusToCentre))) : 0f;
+        orbitalSpeed_precise = (radius > 0 && semi_major_axis > 0) ? Mathf.Sqrt(gravitationalParamter * ((2f / radius) - (1f / semi_major_axis))) : 0f;
 
         return orbitalSpeed_precise;
     }
@@ -68,7 +88,7 @@ public static class PlanetaryObjectData
         1.0241e+26
     };
 
-    public static readonly double[] radiiToCentre = {
+    public static readonly double[] semi_major_axes = {
         0,
         5.791e+10,
         1.082e+11,

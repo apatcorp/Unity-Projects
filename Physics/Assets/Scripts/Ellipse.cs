@@ -33,7 +33,7 @@ public class Ellipse
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class EllipticOrbit : Ellipse
 {
     [SerializeField, HideInInspector]
@@ -65,15 +65,4 @@ public class EllipticOrbit : Ellipse
 
         return position;
     }
-
-
-    /*public void CalculateOrbitalPositionXZ(Transform orbitalObject)
-    {
-        // calculate velocity
-        //angularVelocity += (2f * Mathf.PI * semi_major_axis * semi_minor_axis) / (orbitalPeriod * (radius * radius)) * Time.deltaTime;
-        angularVelocity += CalculateAngularVelocity() * Time.deltaTime;
-        position = EvaluatePositionAtAngle(angularVelocity);
-
-        orbitalObject.localPosition = new Vector3(position.x, 0f, position.y);
-    }*/
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -240,7 +240,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &296185539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,17 +276,17 @@ MonoBehaviour:
     widthMultiplier: 1
     segments: 238
     ellipse:
-      minRadius: 2.0861135
-      maxRadius: 30.679066
+      minRadius: 5.2295976
+      maxRadius: 27.535582
       semi_major_axis: 16.38259
-      semi_minor_axis: 8
-      eccentricity: 0.8726628
-      semi_latus_rectum: 3.9065864
+      semi_minor_axis: 12
+      eccentricity: 0.6807832
+      semi_latus_rectum: 8.78982
   ellipseConfigData:
   - minRadius: 0
     maxRadius: 0
     semi_major_axis: 16.38259
-    semi_minor_axis: 8
+    semi_minor_axis: 12
     eccentricity: 0
     semi_latus_rectum: 0
     minRadiusHidden: 1
@@ -567,6 +567,310 @@ Transform:
   - {fileID: 806773171}
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &331667898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 331667900}
+  - component: {fileID: 331667899}
+  m_Layer: 0
+  m_Name: Kepler Orbital Motion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &331667899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 331667898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 198fdad9b1045264dbd2760d55b4e4bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ellipseConfigurations:
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.94482756, g: 1, b: 0, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.14374924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.14374924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 1, g: 0.19852942, b: 0.19852942, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.19374847
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.19374847
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.059643608, g: 0.02789795, b: 0.9485294, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.33750153
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.33750153
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.09137108, g: 0.8485638, b: 0.9558824, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.15625
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.15625
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.9558824, g: 0.77294624, b: 0.17571367, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.18125153
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.18125153
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.18923011, g: 0.9191176, b: 0.5868929, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.23749924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.23749924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 1, g: 0.40334687, b: 0.18382353, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.15625
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.15625
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.12160543, g: 0.013732712, b: 0.9338235, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.20624924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.20624924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  - lineMaterial: {fileID: 2100000, guid: d9b0d9dfdd34faa4db7096517223cf96, type: 2}
+    lineColour: {r: 0.82200813, g: 0.007352948, b: 1, a: 0}
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: 0.20624924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      - serializedVersion: 2
+        time: 1
+        value: 0.20624924
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 0
+    widthMultiplier: 1
+    segments: 100
+    ellipse:
+      minRadius: 0
+      maxRadius: 0
+      semi_major_axis: 0
+      semi_minor_axis: 0
+      eccentricity: 0
+      semi_latus_rectum: 0
+  massMultiplier: 1
+  radiusMultiplier: 50
+--- !u!4 &331667900
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 331667898}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &337463279
 GameObject:
@@ -1401,7 +1705,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2066364951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,18 +1719,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orbitObjectPrefab: {fileID: 0}
   ellipse:
-    minRadius: 2.0861135
-    maxRadius: 30.679066
+    minRadius: 5.2295976
+    maxRadius: 27.535582
     semi_major_axis: 16.38259
-    semi_minor_axis: 8
-    eccentricity: 0.8726628
-    semi_latus_rectum: 3.9065864
+    semi_minor_axis: 12
+    eccentricity: 0.6807832
+    semi_latus_rectum: 8.78982
     orbitalPeriod: 9
   ellipseMotionData:
     minRadius: 0
     maxRadius: 0
     semi_major_axis: 16.38259
-    semi_minor_axis: 8
+    semi_minor_axis: 12
     eccentricity: 0
     semi_latus_rectum: 0
     minRadiusHidden: 1
@@ -1439,6 +1743,8 @@ MonoBehaviour:
     orbitingMass: 1
     centralMass: 10
     G: 2
+  xy: 0
+  move: 0
 --- !u!4 &2066364952
 Transform:
   m_ObjectHideFlags: 0

@@ -123,6 +123,11 @@ public static class EllipseCalculation
         {
             return 2f * Mathf.PI * Mathf.Sqrt(Mathf.Pow(semi_major_axis, 3) / (G * (central_mass + orbiting_mass)));
         }
+
+        public static float CalculateRadiusAtAngle (float angleInRadians, float semi_latus_rectum, float eccentricity)
+        {
+           return semi_latus_rectum / (1 + eccentricity * Mathf.Cos(angleInRadians));
+        }
     }
 }
 

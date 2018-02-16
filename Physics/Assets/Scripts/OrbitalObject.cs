@@ -17,8 +17,9 @@ public class OrbitalObject : MonoBehaviour
         orbitalObjects.Add(orbitalObjectInfo);
 
         orbitalSpeed = planetaryObject.orbitalSpeed_approximate;
+        orbitalSpeed = planetaryObject.orbitalSpeed_precise;
 
-        orbitalObjectInfo.rb.position = Vector3.right * orbitalObjectInfo.planetaryObject.radiusToCentre;
+        orbitalObjectInfo.rb.position = orbitalObjectInfo.planetaryObject.startPosition;
 
         setup = true;
     }
